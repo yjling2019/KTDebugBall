@@ -41,6 +41,8 @@ static NSString * const kRequestDataChangeNotification = @"kRequestDataChangeNot
 - (void)startNetworkListening;
 - (void)stopNetworkListening;
 
+- (void)clearRequestLogs;
+
 @end
 
 NS_ASSUME_NONNULL_END

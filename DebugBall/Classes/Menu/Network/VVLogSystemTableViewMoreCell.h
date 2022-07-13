@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface VVLogSystemTableViewMoreCell : UITableViewCell
 
+- (void)updateWihtModel:(id)model;
 - (void)updateCellWithDetail:(NSAttributedString *)detail;
 
 @end

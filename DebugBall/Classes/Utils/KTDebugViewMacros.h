@@ -28,8 +28,15 @@
 #endif
 
 
-#define WIDTH self.frame.size.width
-#define HEIGHT self.frame.size.height
+// 颜色定义
+#define RGB(r,g,b)                  [UIColor colorWithRed:r / 255.f green:g / 255.f blue:b / 255.f alpha:1.f]
+#define RGBA(r,g,b,a)               [UIColor colorWithRed:r / 255.f green:g / 255.f blue:b / 255.f alpha:a]
+#define RGB_HEX(hex)                RGBA((float)((hex & 0xFF0000) >> 16),(float)((hex & 0xFF00) >> 8),(float)(hex & 0xFF),1.f)
+#define RGBA_HEX(hex,a)             RGBA((float)((hex & 0xFF0000) >> 16),(float)((hex & 0xFF00) >> 8),(float)(hex & 0xFF),a)
+
+
+#define VIEW_WIDTH self.frame.size.width
+#define VIEW_HEIGHT self.frame.size.height
 
 #define animateDuration 0.3
 #define statusChangeDuration  5.0

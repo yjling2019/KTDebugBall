@@ -11,6 +11,7 @@
 #import "VVLogSystemTableViewCell.h"
 #import "VVLogSystemTableViewMoreCell.h"
 #import "KTDebugManager.h"
+#import "KTDebugViewMacros.h"
 
 static NSString *const VVLogSystemTableViewCellId = @"VVLogSystemTableViewCellId";
 static NSString *const VVLogSystemTableViewMoreCellId = @"VVLogSystemTableViewMoreCellId";
@@ -38,13 +39,22 @@ static NSString *const VVLogSystemError = @"#error#";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	self.title = @"Network Log";
 	[self.view addSubview:self.tableView];
 	[self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
 		make.edges.mas_equalTo(0);
 	}];
 	
+	[self reloadData];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:kRequestDataChangeNotification object:nil];
 	
+	UIBarButtonItem *clearItem = [[UIBarButtonItem alloc] initWithTitle:@"清空" style:UIBarButtonItemStylePlain target:self action:@selector(clearRequestData)];
+	self.navigationItem.rightBarButtonItem = clearItem;
+}
+
+- (void)clearRequestData
+{
+	[DebugSharedManager clearRequestLogs];
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
@@ -76,14 +86,14 @@ static NSString *const VVLogSystemError = @"#error#";
 												   time:model.time
 												 during:model.during];
 		
-		UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [[UIScreen mainScreen] bounds].size.width - 30, 0)];
+		UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width - (30), 0)];
 		tempLabel.numberOfLines = 0;
-		tempLabel.font = [UIFont systemFontOfSize:10];
+		tempLabel.font = [UIFont systemFontOfSize:(10)];
 		tempLabel.text = detail;
-		CGFloat height = [tempLabel sizeThatFits:CGSizeMake([[UIScreen mainScreen] bounds].size.width - 30, 0)].height + 1;
-		return height + 50;// 文字高度 + 按钮高度
+		CGFloat height = [tempLabel sizeThatFits:CGSizeMake([UIScreen mainScreen].bounds.size.width - (30), 0)].height + 1;
+		return height + (50);// 文字高度 + 按钮高度
 	} else {
-		return 25;
+		return (40);
 	}
 }
 
@@ -101,9 +111,9 @@ static NSString *const VVLogSystemError = @"#error#";
 												   time:model.time
 												 during:model.during];
 		
-		NSMutableAttributedString *attrDetail = [[NSMutableAttributedString alloc] initWithString:detail attributes: @{NSFontAttributeName : [UIFont systemFontOfSize:10]}];
+		NSMutableAttributedString *attrDetail = [[NSMutableAttributedString alloc] initWithString:detail attributes: @{NSFontAttributeName : [UIFont systemFontOfSize:(10)]}];
 		NSDictionary *attributes = @{
-									 NSForegroundColorAttributeName: [UIColor colorWithRed:255/255.f green:138/255.f blue:0 alpha:1],
+									 NSForegroundColorAttributeName: RGB_HEX(0xFF8A00),
 									 };
 		
 		[attrDetail addAttributes:attributes range:[detail rangeOfString:VVLogSystemRequestType]];
@@ -114,6 +124,7 @@ static NSString *const VVLogSystemError = @"#error#";
 		[attrDetail addAttributes:attributes range:[detail rangeOfString:VVLogSystemDuring]];
 		
 		[cell updateCellWithDetail:attrDetail];
+		[cell updateWihtModel:model];
 		return cell;
 	} else {
 		// 已收起
@@ -132,7 +143,7 @@ static NSString *const VVLogSystemError = @"#error#";
 	} else {
 		model.spread = YES;
 	}
-	[self.tableView reloadData];
+	[self reloadData];
 }
 
 - (NSString *)compomentDetailWithUrl:(NSString *)url
@@ -143,10 +154,16 @@ static NSString *const VVLogSystemError = @"#error#";
 								time:(NSString *)time
 							  during:(NSString *)during
 {
-	NSData *jsonData = [response dataUsingEncoding:NSUTF8StringEncoding];
-	NSDictionary *dicResponse = [NSJSONSerialization JSONObjectWithData:jsonData
+	NSData *requestData = [request dataUsingEncoding:NSUTF8StringEncoding];
+	NSDictionary *dicRequest = [NSJSONSerialization JSONObjectWithData:requestData
+															   options:NSJSONReadingMutableContainers
+															  error:nil];
+
+	NSData *responseData = [response dataUsingEncoding:NSUTF8StringEncoding];
+	NSDictionary *dicResponse = [NSJSONSerialization JSONObjectWithData:responseData
 														options:NSJSONReadingMutableContainers
 														  error:nil];
+	
 	NSString *detail = url;
 	detail = [detail stringByAppendingString:@"\n"];
 	if (type) {
@@ -156,7 +173,7 @@ static NSString *const VVLogSystemError = @"#error#";
 		detail = [detail stringByAppendingFormat:@"%@ %@\n", VVLogSystemHeader, header];
 	}
 	if (request) {
-		detail = [detail stringByAppendingFormat:@"%@ %@\n", VVLogSystemRequest, request];
+		detail = [detail stringByAppendingFormat:@"%@ %@\n", VVLogSystemRequest, dicRequest];
 	}
 	if (response) {
 		detail = [detail stringByAppendingFormat:@"%@ %@\n", VVLogSystemResponse, dicResponse];
@@ -175,14 +192,16 @@ static NSString *const VVLogSystemError = @"#error#";
 {
 	self.datas = DebugSharedManager.requests;
 	
-	[self.tableView reloadData];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[self.tableView reloadData];
+	});
 }
 
 #pragma mark - lazy load
 - (UITableView *)tableView
 {
 	if (!_tableView) {
-		_tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStyleGrouped];
+		_tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
 		_tableView.delegate = self;
 		_tableView.dataSource = self;
 		[_tableView registerClass:[VVLogSystemTableViewCell class] forCellReuseIdentifier:VVLogSystemTableViewCellId];

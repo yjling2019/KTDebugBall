@@ -72,8 +72,8 @@ static CGPoint origin;
         self.alpha = self.hidden?sleepAlpha:1;
     }];
     [UIView animateWithDuration:animateDuration animations:^{
-        CGFloat x = self.center.x < 20+WIDTH/2 ? 0 :  self.center.x > [[UIScreen mainScreen] bounds].size.width - 20 -WIDTH/2 ? [[UIScreen mainScreen] bounds].size.width : self.center.x;
-        CGFloat y = self.center.y < 40 + HEIGHT/2 ? 0 : self.center.y > [[UIScreen mainScreen] bounds].size.height - 40 - HEIGHT/2 ? [[UIScreen mainScreen] bounds].size.height : self.center.y;
+        CGFloat x = self.center.x < 20+VIEW_WIDTH/2 ? 0 :  self.center.x > [[UIScreen mainScreen] bounds].size.width - 20 -VIEW_WIDTH/2 ? [[UIScreen mainScreen] bounds].size.width : self.center.x;
+        CGFloat y = self.center.y < 40 + VIEW_HEIGHT/2 ? 0 : self.center.y > [[UIScreen mainScreen] bounds].size.height - 40 - VIEW_HEIGHT/2 ? [[UIScreen mainScreen] bounds].size.height : self.center.y;
         if((x == 0 && y ==0) || (x == [[UIScreen mainScreen] bounds].size.width && y == 0) || (x == 0 && y == [[UIScreen mainScreen] bounds].size.height) || (x == [[UIScreen mainScreen] bounds].size.width && y == [[UIScreen mainScreen] bounds].size.height)){
             y = self.center.y;
         }
@@ -101,57 +101,57 @@ static CGPoint origin;
         [[self valueForKey:@"_autoHidden"] boolValue]?[self performSelector:@selector(changeStatus) withObject:nil afterDelay:statusChangeDuration]:nil;
         if(panPoint.x <= [[UIScreen mainScreen] bounds].size.width/2)
         {
-            if(panPoint.y <= 40+HEIGHT/2 && panPoint.x >= 20+WIDTH/2)
+            if(panPoint.y <= 40+VIEW_HEIGHT/2 && panPoint.x >= 20+VIEW_WIDTH/2)
             {
                 [UIView animateWithDuration:animateDuration animations:^{
-                    self.center = CGPointMake(panPoint.x, HEIGHT/2+gap);
+                    self.center = CGPointMake(panPoint.x, VIEW_HEIGHT/2+gap);
                 }];
             }
-            else if(panPoint.y >= [[UIScreen mainScreen] bounds].size.height-HEIGHT/2-40 && panPoint.x >= 20+WIDTH/2)
+            else if(panPoint.y >= [[UIScreen mainScreen] bounds].size.height-VIEW_HEIGHT/2-40 && panPoint.x >= 20+VIEW_WIDTH/2)
             {
                 [UIView animateWithDuration:animateDuration animations:^{
-                    self.center = CGPointMake(panPoint.x, [[UIScreen mainScreen] bounds].size.height-HEIGHT/2-gap);
+                    self.center = CGPointMake(panPoint.x, [[UIScreen mainScreen] bounds].size.height-VIEW_HEIGHT/2-gap);
                 }];
             }
-            else if (panPoint.x < WIDTH/2+20 && panPoint.y > [[UIScreen mainScreen] bounds].size.height-HEIGHT/2)
+            else if (panPoint.x < VIEW_WIDTH/2+20 && panPoint.y > [[UIScreen mainScreen] bounds].size.height-VIEW_HEIGHT/2)
             {
                 [UIView animateWithDuration:animateDuration animations:^{
-                    self.center = CGPointMake(WIDTH/2+gap, [[UIScreen mainScreen] bounds].size.height-HEIGHT/2-gap);
+                    self.center = CGPointMake(VIEW_WIDTH/2+gap, [[UIScreen mainScreen] bounds].size.height-VIEW_HEIGHT/2-gap);
                 }];
             }
             else
             {
-                CGFloat pointy = panPoint.y < HEIGHT/2 ? HEIGHT/2+gap :panPoint.y;
+                CGFloat pointy = panPoint.y < VIEW_HEIGHT/2 ? VIEW_HEIGHT/2+gap :panPoint.y;
                 [UIView animateWithDuration:animateDuration animations:^{
-                    self.center = CGPointMake(WIDTH/2+gap, pointy);
+                    self.center = CGPointMake(VIEW_WIDTH/2+gap, pointy);
                 }];
             }
         }
         else if(panPoint.x > [[UIScreen mainScreen] bounds].size.width/2)
         {
-            if(panPoint.y <= 40+HEIGHT/2 && panPoint.x < [[UIScreen mainScreen] bounds].size.width-WIDTH/2-20 )
+            if(panPoint.y <= 40+VIEW_HEIGHT/2 && panPoint.x < [[UIScreen mainScreen] bounds].size.width-VIEW_WIDTH/2-20 )
             {
                 [UIView animateWithDuration:animateDuration animations:^{
-                    self.center = CGPointMake(panPoint.x, HEIGHT/2+gap);
+                    self.center = CGPointMake(panPoint.x, VIEW_HEIGHT/2+gap);
                 }];
             }
-            else if(panPoint.y >= [[UIScreen mainScreen] bounds].size.height-40-HEIGHT/2 && panPoint.x < [[UIScreen mainScreen] bounds].size.width-WIDTH/2-20)
+            else if(panPoint.y >= [[UIScreen mainScreen] bounds].size.height-40-VIEW_HEIGHT/2 && panPoint.x < [[UIScreen mainScreen] bounds].size.width-VIEW_WIDTH/2-20)
             {
                 [UIView animateWithDuration:animateDuration animations:^{
-                    self.center = CGPointMake(panPoint.x, [[UIScreen mainScreen] bounds].size.height-HEIGHT/2-gap);
+                    self.center = CGPointMake(panPoint.x, [[UIScreen mainScreen] bounds].size.height-VIEW_HEIGHT/2-gap);
                 }];
             }
-            else if (panPoint.x > [[UIScreen mainScreen] bounds].size.width-WIDTH/2-20 && panPoint.y < HEIGHT/2)
+            else if (panPoint.x > [[UIScreen mainScreen] bounds].size.width-VIEW_WIDTH/2-20 && panPoint.y < VIEW_HEIGHT/2)
             {
                 [UIView animateWithDuration:animateDuration animations:^{
-                    self.center = CGPointMake([[UIScreen mainScreen] bounds].size.width-WIDTH/2-gap, HEIGHT/2+gap);
+                    self.center = CGPointMake([[UIScreen mainScreen] bounds].size.width-VIEW_WIDTH/2-gap, VIEW_HEIGHT/2+gap);
                 }];
             }
             else
             {
-                CGFloat pointy = panPoint.y > [[UIScreen mainScreen] bounds].size.height-HEIGHT/2 ? [[UIScreen mainScreen] bounds].size.height-HEIGHT/2-gap :panPoint.y;
+                CGFloat pointy = panPoint.y > [[UIScreen mainScreen] bounds].size.height-VIEW_HEIGHT/2 ? [[UIScreen mainScreen] bounds].size.height-VIEW_HEIGHT/2-gap :panPoint.y;
                 [UIView animateWithDuration:animateDuration animations:^{
-                    self.center = CGPointMake([[UIScreen mainScreen] bounds].size.width-WIDTH/2-gap, pointy);
+                    self.center = CGPointMake([[UIScreen mainScreen] bounds].size.width-VIEW_WIDTH/2-gap, pointy);
                 }];
             }
         }

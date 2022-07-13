@@ -8,7 +8,7 @@
 #import "KTDebugManager.h"
 #import "KTDebugView.h"
 #import "KTDebugViewMacros.h"
-#import "KTDBUtils.h"
+#import "KTDebugBallUtils.h"
 #import "KTDebugMenuController.h"
 
 #import <Aspects/Aspects.h>
@@ -91,9 +91,17 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 		_nav = [[UINavigationController alloc] initWithRootViewController:self.menu];
 		_nav.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
 		UINavigationBar *bar = _nav.navigationBar;
-//		bar.translucent = NO;
-		[bar setBackgroundColor:[UIColor colorWithRed:0 green:120/255.f blue:255/255.f alpha:1]];
+		[bar setTintColor:[UIColor whiteColor]];
+		bar.translucent = NO;
+		[bar setBackgroundImage:imageWithColor([UIColor colorWithRed:0 green:120/255.f blue:255/255.f alpha:1]) forBarMetrics:UIBarMetricsDefault];
 		bar.titleTextAttributes = @{NSForegroundColorAttributeName:[UIColor whiteColor]};
+		if (@available(iOS 15.0, *)) {
+			UINavigationBarAppearance * appearance = [[UINavigationBarAppearance alloc] init];
+			[appearance setBackgroundImage:imageWithColor([UIColor colorWithRed:0 green:120/255.f blue:255/255.f alpha:1])];
+			[appearance setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor whiteColor]}];
+			bar.standardAppearance = appearance;
+			bar.scrollEdgeAppearance = appearance;
+		}
 	}
 	return _nav;
 }
@@ -177,7 +185,8 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 - (void)initNetworkConfig
 {
 	NSArray *datas = [[NSUserDefaults standardUserDefaults] valueForKey:kRequestDatasCacheKey];
-	self.requestDatas = [NSArray yy_modelArrayWithClass:[ConsoleHttpModel class] json:datas].mutableCopy;
+	NSArray *models = [NSArray yy_modelArrayWithClass:[ConsoleHttpModel class] json:datas];
+	self.requestDatas = [NSMutableArray arrayWithArray:models];
 	
 	NSMutableArray *array = [NSMutableArray array];
 	
@@ -212,8 +221,10 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 			NSMutableDictionary *params = dictionaryFromUrl(dataTask.currentRequest.URL.absoluteString);
 			if (![model.type isEqualToString:@"GET"]) {
 				// Post/Put/Delete
-				NSString *bodyKeyValueStr = [[NSString alloc] initWithData:[dataTask.originalRequest HTTPBody] encoding:NSUTF8StringEncoding];
-				NSDictionary *bodyParams = dictionaryFromUrl(bodyKeyValueStr);
+				NSDictionary *bodyParams = [NSJSONSerialization JSONObjectWithData:[dataTask.originalRequest HTTPBody]
+																	options:NSJSONReadingMutableContainers
+																	  error:nil];
+				
 				[params addEntriesFromDictionary:bodyParams];
 			}
 			model.request = requestFromDict(params);
@@ -228,8 +239,8 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 				model.time = [formatter stringFromDate:startDate];
 				model.during = [NSString stringWithFormat:@"%.0fms", ([[NSDate new] timeIntervalSince1970] - [startDate timeIntervalSince1970]) * 1000.0];
 			}
-			[self.requestDatas addObject:model];
-			
+			[self.requestDatas insertObject:model atIndex:0];
+
 			NSArray *datas = [self.requestDatas yy_modelToJSONObject];
 			[[NSUserDefaults standardUserDefaults] setValue:datas forKey:kRequestDatasCacheKey];
 			[[NSUserDefaults standardUserDefaults] synchronize];
@@ -270,7 +281,7 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 					model.time = [formatter stringFromDate:startDate];
 					model.during = [NSString stringWithFormat:@"%.0fms", ([[NSDate new] timeIntervalSince1970] - [startDate timeIntervalSince1970]) * 1000.0];
 				}
-				[self.requestDatas addObject:model];
+				[self.requestDatas insertObject:model atIndex:0];
 				
 				NSArray *datas = [self.requestDatas yy_modelToJSONObject];
 				[[NSUserDefaults standardUserDefaults] setValue:datas forKey:kRequestDatasCacheKey];
@@ -301,6 +312,15 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 - (void)stopNetworkListening
 {
 	self.isNetworkListening = NO;
+}
+
+- (void)clearRequestLogs
+{
+	[self.requestDatas removeAllObjects];
+	[[NSUserDefaults standardUserDefaults] setValue:self.requestDatas forKey:kRequestDatasCacheKey];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:kRequestDataChangeNotification object:nil];
 }
 
 - (NSArray *)requests

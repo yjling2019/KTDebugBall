@@ -1,34 +1,52 @@
 //
-//  KTDBUtils.h
+//  KTDebugBallUtils.h
 //  Pods
 //
 //  Created by KOTU on 2017/8/24.
 //
 //
 
-#ifndef KTDBUtils_h
-#define KTDBUtils_h
+#ifndef KTDebugBallUtils_h
+#define KTDebugBallUtils_h
 
 #import <UIKit/UIKit.h>
 
 #define kDebugBallRequestHeaderKeys @[@"uuid", @"uid", @"access_token", @"country_code", @"currency", @"s", @"idfa", @"organic_idfv", @"req_time", @"sign", @"timezone"];
 
-
-NSBundle *DebugBallBundle(void) {
-    NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(@"DebugView")];
-    NSURL *bundleURL = [bundle URLForResource:@"DebugBall" withExtension:@"bundle"];
-    return [NSBundle bundleWithURL:bundleURL];
+static inline NSBundle *DebugBallBundle(void) {
+	NSString *podName = @"DebugBall";
+	
+	NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(podName)];
+	NSURL * url = [bundle URLForResource:podName withExtension:@"bundle"];
+	if (!url) {
+		NSArray *frameWorks = [NSBundle allFrameworks];
+		for (NSBundle *tempBundle in frameWorks) {
+			url = [tempBundle URLForResource:podName withExtension:@"bundle"];
+			if (url) {
+				bundle =[NSBundle bundleWithURL:url];
+				if (!bundle.loaded) {
+					[bundle load];
+				}
+				return bundle;
+			}
+		}
+	} else {
+		bundle =[NSBundle bundleWithURL:url];
+		return bundle;
+	}
+	
+    return bundle;
 }
 
-NSString * DebugBallPathForResource(NSString *name, NSString *ext) {
+static inline NSString * DebugBallPathForResource(NSString *name, NSString *ext) {
     return [DebugBallBundle() pathForResource:name ofType:ext];
 }
 
-UIImage * DebugBallImageWithNamed(NSString *name){
+static inline UIImage * DebugBallImageWithNamed(NSString *name){
     return [UIImage imageNamed:name inBundle:DebugBallBundle() compatibleWithTraitCollection:nil];
 }
 
-void displayBorder (UIView *view, BOOL display, BOOL recursion) {
+static inline void displayBorder (UIView *view, BOOL display, BOOL recursion) {
     if (![view isKindOfClass:UIView.class]) {
         return;
     }
@@ -57,7 +75,7 @@ void displayBorder (UIView *view, BOOL display, BOOL recursion) {
     }
 }
 
-NSMutableDictionary * dictionaryFromUrl(NSString *url) {
+static inline NSMutableDictionary * dictionaryFromUrl(NSString *url) {
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
 	NSArray *array = [url componentsSeparatedByString:@"?"];
 	NSString *keyValueStr = array.count > 1 ? array[1] : url;
@@ -73,7 +91,7 @@ NSMutableDictionary * dictionaryFromUrl(NSString *url) {
 	return dict;
 }
 
-NSString * headerFromDict(NSDictionary *dict) {
+static inline NSString * headerFromDict(NSDictionary *dict) {
 	NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
 	
 	NSArray *headerKeys = kDebugBallRequestHeaderKeys;
@@ -91,7 +109,7 @@ NSString * headerFromDict(NSDictionary *dict) {
 	return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
-NSString * requestFromDict(NSDictionary *dict) {
+static inline NSString * requestFromDict(NSDictionary *dict) {
 	NSMutableDictionary *requestDict = [NSMutableDictionary dictionary];
 	
 	NSArray *headerKeys = kDebugBallRequestHeaderKeys;
@@ -109,4 +127,18 @@ NSString * requestFromDict(NSDictionary *dict) {
 	return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
-#endif /* KTDBUtils_h */
+static inline UIImage * imageWithColor(UIColor *color) {
+	CGRect rect = CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+	UIGraphicsBeginImageContext(rect.size);
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	
+	CGContextSetFillColorWithColor(context, [color CGColor]);
+	CGContextFillRect(context, rect);
+	
+	UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	
+	return image;
+}
+
+#endif /* KTDebugBallUtils_h */

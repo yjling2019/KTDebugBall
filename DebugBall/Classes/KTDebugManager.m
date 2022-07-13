@@ -15,6 +15,7 @@
 #import <AFNetworking/AFHTTPSessionManager.h>
 #import "NSURLSessionTask+VVHelp.h"
 #import "ConsoleHttpModel.h"
+#import <YYModel/YYModel.h>
 
 NSNotificationName const kDisplayBorderEnabled              = @"kDisplayBorderEnabled";
 NSNotificationName const kDebugBallAutoHidden               = @"kDebugBallAutoHidden";
@@ -25,7 +26,11 @@ static NSString * kCurrentDomainKey         = @"kCurrentDomainKey";
 static NSString * kCurrentH5DomainKey       = @"kCurrentH5DomainKey";
 static NSString * kHasInstalledDebugBall    = @"kHasInstalledDebugBall";
 
+NSString * const kRequestDatasCacheKey = @"com.kotu.debugball.data.RequestDatasCacheKey";
+
 @interface KTDebugManager ()
+
+@property (nonatomic, strong) NSMutableArray *requestDatas;
 
 @property (nonatomic, strong) KTDebugMenuController *menu;
 @property (nonatomic, strong) UINavigationController *nav;
@@ -171,6 +176,9 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 
 - (void)initNetworkConfig
 {
+	NSArray *datas = [[NSUserDefaults standardUserDefaults] valueForKey:kRequestDatasCacheKey];
+	self.requestDatas = [NSArray yy_modelArrayWithClass:[ConsoleHttpModel class] json:datas].mutableCopy;
+	
 	NSMutableArray *array = [NSMutableArray array];
 	
 	{
@@ -220,17 +228,13 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 				model.time = [formatter stringFromDate:startDate];
 				model.during = [NSString stringWithFormat:@"%.0fms", ([[NSDate new] timeIntervalSince1970] - [startDate timeIntervalSince1970]) * 1000.0];
 			}
-									  
-			if (self.isNetworkListening) {
-#warning TODO 0713
-//				[VVStoreTool updateInCacheRealm:^(RLMRealm * _Nonnull realm) {
-//					[realm addObject:model];
-//				}];
-//
-//				if (self.hookDataUpdateCallback) {
-//					self.hookDataUpdateCallback(CT_Http);
-//				}
-			}
+			[self.requestDatas addObject:model];
+			
+			NSArray *datas = [self.requestDatas yy_modelToJSONObject];
+			[[NSUserDefaults standardUserDefaults] setValue:datas forKey:kRequestDatasCacheKey];
+			[[NSUserDefaults standardUserDefaults] synchronize];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName:kRequestDataChangeNotification object:nil];
 		} error:nil];
 		[array addObject:token];
 	}
@@ -244,7 +248,7 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 				return;
 			}
 			
-			if(error) {
+			if (error) {
 				ConsoleHttpModel *model = [[ConsoleHttpModel alloc] init];
 				model.url = [dataTask.currentRequest.URL.absoluteString componentsSeparatedByString:@"?"][0];
 				model.type = dataTask.currentRequest.HTTPMethod;
@@ -260,23 +264,19 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 				model.response = [error localizedDescription];
 				
 				NSDate *startDate = dataTask.vv_requestBeginDate;
-				if(startDate){
+				if (startDate) {
 					NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 					formatter.dateFormat = @"MM-dd HH:mm:ss";
 					model.time = [formatter stringFromDate:startDate];
 					model.during = [NSString stringWithFormat:@"%.0fms", ([[NSDate new] timeIntervalSince1970] - [startDate timeIntervalSince1970]) * 1000.0];
 				}
+				[self.requestDatas addObject:model];
 				
-				if (self.isNetworkListening) {
-#warning TODO 0713
-//					[VVStoreTool updateInCacheRealm:^(RLMRealm * _Nonnull realm) {
-//						[realm addObject:model];
-//					}];
-//					
-//					if (self.hookDataUpdateCallback) {
-//						self.hookDataUpdateCallback(CT_Http);
-//					}
-				}
+				NSArray *datas = [self.requestDatas yy_modelToJSONObject];
+				[[NSUserDefaults standardUserDefaults] setValue:datas forKey:kRequestDatasCacheKey];
+				[[NSUserDefaults standardUserDefaults] synchronize];
+				
+				[[NSNotificationCenter defaultCenter] postNotificationName:kRequestDataChangeNotification object:nil];
 			}
 		} error:nil];
 		[array addObject:token];
@@ -301,6 +301,11 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 - (void)stopNetworkListening
 {
 	self.isNetworkListening = NO;
+}
+
+- (NSArray *)requests
+{
+	return self.requestDatas.copy;
 }
 
 @end

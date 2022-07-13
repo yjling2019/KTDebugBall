@@ -11,9 +11,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define DebugSharedManager [KTDebugManager sharedManager]
 
+static NSString * const kRequestDataChangeNotification = @"kRequestDataChangeNotification";
 
 @interface KTDebugManager : NSObject
 
++ (instancetype)sharedManager;
 + (void)presentDebugActionMenuController;
 
 @end
@@ -31,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @interface KTDebugManager (Network)
+
+@property (nonatomic, strong, readonly) NSArray *requests;
 
 - (void)initNetworkConfig;
 - (void)uninitNetworkConfig;

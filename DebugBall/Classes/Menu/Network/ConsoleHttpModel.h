@@ -23,7 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property NSString *create_time;
 
 @property BOOL spread;
-@property BOOL isMocked;
 
 @property (nonatomic, copy) NSString * curlString;
 

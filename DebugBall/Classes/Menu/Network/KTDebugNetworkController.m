@@ -10,6 +10,7 @@
 #import "ConsoleHttpModel.h"
 #import "VVLogSystemTableViewCell.h"
 #import "VVLogSystemTableViewMoreCell.h"
+#import "KTDebugManager.h"
 
 static NSString *const VVLogSystemTableViewCellId = @"VVLogSystemTableViewCellId";
 static NSString *const VVLogSystemTableViewMoreCellId = @"VVLogSystemTableViewMoreCellId";
@@ -41,6 +42,9 @@ static NSString *const VVLogSystemError = @"#error#";
 	[self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
 		make.edges.mas_equalTo(0);
 	}];
+	
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:kRequestDataChangeNotification object:nil];
+	
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
@@ -123,14 +127,11 @@ static NSString *const VVLogSystemError = @"#error#";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	ConsoleHttpModel *model = self.datas[indexPath.row];
-#warning TODO
-//	[VVStoreTool updateInCacheRealm:^(RLMRealm * _Nonnull realm) {
-		if (model.spread) {
-			model.spread = !model.spread;
-		} else {
-			model.spread = YES;
-		}
-//	}];
+	if (model.spread) {
+		model.spread = !model.spread;
+	} else {
+		model.spread = YES;
+	}
 	[self.tableView reloadData];
 }
 
@@ -170,9 +171,9 @@ static NSString *const VVLogSystemError = @"#error#";
 	return detail;
 }
 
-- (void)reloadDataWithArray:(NSArray *)array
+- (void)reloadData
 {
-	self.datas = array;
+	self.datas = DebugSharedManager.requests;
 	
 	[self.tableView reloadData];
 }

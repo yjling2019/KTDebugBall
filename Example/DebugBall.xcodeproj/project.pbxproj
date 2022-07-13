@@ -506,7 +506,7 @@
 				GCC_PREFIX_HEADER = "DebugBall/DebugBall-Prefix.pch";
 				INFOPLIST_FILE = "DebugBall/DebugBall-Info.plist";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.kotu.demo.DebugBall-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kotu.debugball;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				WRAPPER_EXTENSION = app;
@@ -522,7 +522,7 @@
 				GCC_PREFIX_HEADER = "DebugBall/DebugBall-Prefix.pch";
 				INFOPLIST_FILE = "DebugBall/DebugBall-Info.plist";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.kotu.demo.DebugBall-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kotu.debugball;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				WRAPPER_EXTENSION = app;

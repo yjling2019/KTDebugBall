@@ -8,6 +8,7 @@
 #import "KTDebugMenuController.h"
 #import <Masonry/Masonry.h>
 #import "KTDebugMenuModel.h"
+#import "KTDebugNetworkController.h"
 
 @interface KTDebugMenuController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -26,7 +27,6 @@
 	[self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
 		make.edges.mas_equalTo(0);
 	}];
-	
 	[self reloadDatas];
 }
 
@@ -173,6 +173,16 @@
 	}
 	
 	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	KTDebugMenuModel *model = [self.datas objectAtIndex:indexPath.section];
+	KTDebugMenuItemModel *item = [model.items objectAtIndex:indexPath.row];
+	
+	if ([item.title isEqualToString:@"Display network sniffer"]) {
+		[self.navigationController pushViewController:KTDebugNetworkController.new animated:YES];
+	}
 }
 
 #pragma mark - lazy load

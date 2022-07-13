@@ -201,7 +201,7 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 				return;
 			}
 			
-			dataTask.vv_requestBeginDate = [NSDate date];
+			dataTask.kt_requestBeginDate = [NSDate date];
 		} error:nil];
 		[array addObject:token];
 	}
@@ -211,6 +211,23 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 		[AFURLSessionManager aspect_hookSelector:@selector(URLSession:dataTask:didReceiveData:)
 									 withOptions:AspectPositionAfter
 									  usingBlock:^(id<AspectInfo> aspectInfo, NSURLSession *session, NSURLSessionDataTask *dataTask, NSData *data) {
+			if (!self.isNetworkListening) {
+				return;
+			}
+			
+			if (!dataTask.kt_mutableData) {
+				dataTask.kt_mutableData = [NSMutableData data];
+			}
+			[dataTask.kt_mutableData appendData:data];
+		} error:nil];
+		[array addObject:token];
+	}
+	
+	{
+		id <AspectToken> token =
+		[AFURLSessionManager aspect_hookSelector:@selector(URLSession:task:didCompleteWithError:)
+									 withOptions:AspectPositionAfter
+									  usingBlock:^(id<AspectInfo> aspectInfo, NSURLSession *session, NSURLSessionTask *dataTask, NSError *error) {
 			if (!self.isNetworkListening) {
 				return;
 			}
@@ -229,66 +246,29 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 			}
 			model.request = requestFromDict(params);
 			model.header = headerFromDict(params);
-			NSString *responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-			model.response = responseStr;
 			
-			NSDate *startDate = dataTask.vv_requestBeginDate;
+			if (error) {
+				model.response = [error localizedDescription];
+			} else {
+				NSString *responseStr = [[NSString alloc] initWithData:dataTask.kt_mutableData encoding:NSUTF8StringEncoding];
+				model.response = responseStr;
+			}
+			
+			NSDate *startDate = dataTask.kt_requestBeginDate;
 			if (startDate) {
 				NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
 				formatter.dateFormat = @"MM-dd HH:mm:ss";
 				model.time = [formatter stringFromDate:startDate];
 				model.during = [NSString stringWithFormat:@"%.0fms", ([[NSDate new] timeIntervalSince1970] - [startDate timeIntervalSince1970]) * 1000.0];
 			}
+		
 			[self.requestDatas insertObject:model atIndex:0];
-
+			
 			NSArray *datas = [self.requestDatas yy_modelToJSONObject];
 			[[NSUserDefaults standardUserDefaults] setValue:datas forKey:kRequestDatasCacheKey];
 			[[NSUserDefaults standardUserDefaults] synchronize];
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName:kRequestDataChangeNotification object:nil];
-		} error:nil];
-		[array addObject:token];
-	}
-	
-	{
-		id <AspectToken> token =
-		[AFURLSessionManager aspect_hookSelector:@selector(URLSession:task:didCompleteWithError:)
-									 withOptions:AspectPositionAfter
-									  usingBlock:^(id<AspectInfo> aspectInfo, NSURLSession *session, NSURLSessionTask *dataTask, NSError *error) {
-			if (!self.isNetworkListening) {
-				return;
-			}
-			
-			if (error) {
-				ConsoleHttpModel *model = [[ConsoleHttpModel alloc] init];
-				model.url = [dataTask.currentRequest.URL.absoluteString componentsSeparatedByString:@"?"][0];
-				model.type = dataTask.currentRequest.HTTPMethod;
-				NSMutableDictionary *params = dictionaryFromUrl(dataTask.currentRequest.URL.absoluteString);
-				if (![model.type isEqualToString:@"GET"]) {
-					// Post/Put/Delete
-					NSString *bodyKeyValueStr = [[NSString alloc] initWithData:[dataTask.originalRequest HTTPBody] encoding:NSUTF8StringEncoding];
-					NSDictionary *bodyParams = dictionaryFromUrl(bodyKeyValueStr);
-					[params addEntriesFromDictionary:bodyParams];
-				}
-				model.request = requestFromDict(params);
-				model.header = headerFromDict(params);
-				model.response = [error localizedDescription];
-				
-				NSDate *startDate = dataTask.vv_requestBeginDate;
-				if (startDate) {
-					NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-					formatter.dateFormat = @"MM-dd HH:mm:ss";
-					model.time = [formatter stringFromDate:startDate];
-					model.during = [NSString stringWithFormat:@"%.0fms", ([[NSDate new] timeIntervalSince1970] - [startDate timeIntervalSince1970]) * 1000.0];
-				}
-				[self.requestDatas insertObject:model atIndex:0];
-				
-				NSArray *datas = [self.requestDatas yy_modelToJSONObject];
-				[[NSUserDefaults standardUserDefaults] setValue:datas forKey:kRequestDatasCacheKey];
-				[[NSUserDefaults standardUserDefaults] synchronize];
-				
-				[[NSNotificationCenter defaultCenter] postNotificationName:kRequestDataChangeNotification object:nil];
-			}
 		} error:nil];
 		[array addObject:token];
 	}

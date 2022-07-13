@@ -2,7 +2,7 @@
 //  KTDebugNetworkController.m
 //  DebugBall
 //
-//  Created by 凌永剑 on 2022/7/13.
+//  Created by KOTU on 2022/7/13.
 //
 
 #import "KTDebugNetworkController.h"

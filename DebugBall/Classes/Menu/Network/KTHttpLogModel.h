@@ -1,6 +1,5 @@
 //
-//  ConsoleHttpModel.h
-//  Vova
+//  KTHttpLogModel.h
 //
 //  Created by KOTU on 2019/2/12.
 //  Copyright © 2019 iOS. All rights reserved.
@@ -10,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ConsoleHttpModel : NSObject
+@interface KTHttpLogModel : NSObject
 
 @property NSString *url;
 @property NSString *type;

@@ -1,14 +1,13 @@
 //
-//  ConsoleHttpModel.m
-//  Vova
+//  KTHttpLogModel.m
 //
 //  Created by KOTU on 2019/2/12.
 //  Copyright © 2019 iOS. All rights reserved.
 //
 
-#import "ConsoleHttpModel.h"
+#import "KTHttpLogModel.h"
 
-@implementation ConsoleHttpModel
+@implementation KTHttpLogModel
 
 - (void)setUpCurlStringWithRequest:(NSURLRequest *)request
 {

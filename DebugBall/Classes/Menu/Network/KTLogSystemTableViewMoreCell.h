@@ -1,6 +1,5 @@
 //
-//  VVLogSystemTableViewMoreCell.h
-//  Vova
+//  KTLogSystemTableViewMoreCell.h
 //
 //  Created by KOTU on 2019/2/13.
 //  Copyright © 2019 iOS. All rights reserved.
@@ -10,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface VVLogSystemTableViewMoreCell : UITableViewCell
+@interface KTLogSystemTableViewMoreCell : UITableViewCell
 
 - (void)updateWihtModel:(id)model;
 - (void)updateCellWithDetail:(NSAttributedString *)detail;

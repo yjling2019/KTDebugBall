@@ -1,21 +1,20 @@
 //
-//  VVLogSystemTableViewCell.m
-//  Vova
+//  KTLogSystemTableViewCell.m
 //
 //  Created by KOTU on 2019/2/13.
 //  Copyright © 2019 iOS. All rights reserved.
 //
 
-#import "VVLogSystemTableViewCell.h"
+#import "KTLogSystemTableViewCell.h"
 #import <Masonry/Masonry.h>
 #import "KTDebugViewMacros.h"
 #import "KTDebugBallUtils.h"
 
-@interface VVLogSystemTableViewCellLabel : UILabel
+@interface KTLogSystemTableViewCellLabel : UILabel
 
 @end
 
-@implementation VVLogSystemTableViewCellLabel
+@implementation KTLogSystemTableViewCellLabel
 
 - (void)drawTextInRect:(CGRect)rect {//文字距离上下左右边框都有10单位的间隔
 	CGRect newRect = CGRectMake(rect.origin.x + 10, rect.origin.y + 10, rect.size.width - 20, rect.size.height -20);
@@ -24,9 +23,9 @@
 
 @end
 
-@interface VVLogSystemTableViewCell ()
+@interface KTLogSystemTableViewCell ()
 
-@property (nonatomic, assign) VVLogSystemTableViewCellType cellType;
+@property (nonatomic, assign) KTLogSystemTableViewCellType cellType;
 
 @property (nonatomic, strong) UIView *headerContentView; // 头内容容器
 
@@ -48,7 +47,7 @@
 
 @end
 
-@implementation VVLogSystemTableViewCell
+@implementation KTLogSystemTableViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -62,7 +61,7 @@
 	return self;
 }
 
-- (void)setUpConstraintsWithType:(VVLogSystemTableViewCellType)cellType
+- (void)setUpConstraintsWithType:(KTLogSystemTableViewCellType)cellType
 {
 	self.cellType = cellType;
 	
@@ -104,7 +103,7 @@
 		make.width.mas_lessThanOrEqualTo(260);
 	}];
 	
-	if (self.cellType == VVLogSystemTableViewCellTypeTrackAndApi) {
+	if (self.cellType == KTLogSystemTableViewCellTypeTrackAndApi) {
 		[self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
 			make.trailing.equalTo(self.headerContentView).offset(-8);
 			make.top.equalTo(@0);
@@ -317,7 +316,7 @@
 - (__kindof UIView *)_getToastSuperView:(__kindof UIView *)view
 {
 	__kindof UIView *_view = [view superview];
-	if ([_view isKindOfClass:NSClassFromString(@"VVLogSystemView")]) {
+	if ([_view isKindOfClass:NSClassFromString(@"KTLogSystemView")]) {
 		return _view;
 	}else {
 		return [self _getToastSuperView:_view];
@@ -370,7 +369,7 @@
 		_label1 = [UILabel new];
 		_label1.font = [UIFont systemFontOfSize:10];
 		_label1.textColor = RGB_HEX(0xE58101);
-		//        if (self.cellType == VVLogSystemTableViewCellTypeTrackAndApi) {
+		//        if (self.cellType == KTLogSystemTableViewCellTypeTrackAndApi) {
 		//            _label1.layer.borderColor = [UIColor colorWithHex:0x323232].CGColor;
 		//            _label1.layer.borderWidth = 1.0;
 		//        }
@@ -408,7 +407,7 @@
 		_warningLb.font = [UIFont systemFontOfSize:10];
 		_warningLb.textColor = [UIColor whiteColor];
 		_warningLb.backgroundColor = RGB_HEX(0xE02020);
-		if (self.cellType == VVLogSystemTableViewCellTypeTrackAndApi) {
+		if (self.cellType == KTLogSystemTableViewCellTypeTrackAndApi) {
 			_warningLb.backgroundColor = RGB_HEX(0xE02020);
 		}
 		_warningLb.textAlignment = NSTextAlignmentCenter;

@@ -7,25 +7,25 @@
 
 #import "KTDebugNetworkController.h"
 #import <Masonry/Masonry.h>
-#import "ConsoleHttpModel.h"
-#import "VVLogSystemTableViewCell.h"
-#import "VVLogSystemTableViewMoreCell.h"
+#import "KTHttpLogModel.h"
+#import "KTLogSystemTableViewCell.h"
+#import "KTLogSystemTableViewMoreCell.h"
 #import "KTDebugManager.h"
 #import "KTDebugViewMacros.h"
 
-static NSString *const VVLogSystemTableViewCellId = @"VVLogSystemTableViewCellId";
-static NSString *const VVLogSystemTableViewMoreCellId = @"VVLogSystemTableViewMoreCellId";
+static NSString *const KTLogSystemTableViewCellId = @"KTLogSystemTableViewCellId";
+static NSString *const KTLogSystemTableViewMoreCellId = @"KTLogSystemTableViewMoreCellId";
 
-static NSString *const VVLogSystemRequestType = @"#type#";
-static NSString *const VVLogSystemHeader = @"#request-public#";
-static NSString *const VVLogSystemRequest = @"#request-other#";
-static NSString *const VVLogSystemResponse = @"#response#";
-static NSString *const VVLogSystemTime = @"#time#";
-static NSString *const VVLogSystemDuring = @"#during#";
-//static NSString *const VVLogSystemParams = @"#params#";
-//static NSString *const VVLogSystemCommon = @"#common#";
-//static NSString *const VVLogSystemAppCommon = @"#appCommon#";
-static NSString *const VVLogSystemError = @"#error#";
+static NSString *const KTLogSystemRequestType = @"#type#";
+static NSString *const KTLogSystemHeader = @"#request-public#";
+static NSString *const KTLogSystemRequest = @"#request-other#";
+static NSString *const KTLogSystemResponse = @"#response#";
+static NSString *const KTLogSystemTime = @"#time#";
+static NSString *const KTLogSystemDuring = @"#during#";
+//static NSString *const KTLogSystemParams = @"#params#";
+//static NSString *const KTLogSystemCommon = @"#common#";
+//static NSString *const KTLogSystemAppCommon = @"#appCommon#";
+static NSString *const KTLogSystemError = @"#error#";
 
 @interface KTDebugNetworkController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -76,7 +76,7 @@ static NSString *const VVLogSystemError = @"#error#";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	ConsoleHttpModel *model = self.datas[indexPath.row];
+	KTHttpLogModel *model = self.datas[indexPath.row];
 	if (model.spread) {
 		NSString *detail = [self compomentDetailWithUrl:model.url
 												   type:model.type
@@ -99,10 +99,10 @@ static NSString *const VVLogSystemError = @"#error#";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	ConsoleHttpModel *model = self.datas[indexPath.row];
+	KTHttpLogModel *model = self.datas[indexPath.row];
 	if (model.spread) {
 		// 已展开
-		VVLogSystemTableViewMoreCell *cell = [tableView dequeueReusableCellWithIdentifier:VVLogSystemTableViewMoreCellId];
+		KTLogSystemTableViewMoreCell *cell = [tableView dequeueReusableCellWithIdentifier:KTLogSystemTableViewMoreCellId];
 		NSString *detail = [self compomentDetailWithUrl:model.url
 												   type:model.type
 												 header:model.header
@@ -116,20 +116,20 @@ static NSString *const VVLogSystemError = @"#error#";
 									 NSForegroundColorAttributeName: RGB_HEX(0xFF8A00),
 									 };
 		
-		[attrDetail addAttributes:attributes range:[detail rangeOfString:VVLogSystemRequestType]];
-		[attrDetail addAttributes:attributes range:[detail rangeOfString:VVLogSystemHeader]];
-		[attrDetail addAttributes:attributes range:[detail rangeOfString:VVLogSystemRequest]];
-		[attrDetail addAttributes:attributes range:[detail rangeOfString:VVLogSystemResponse]];
-		[attrDetail addAttributes:attributes range:[detail rangeOfString:VVLogSystemTime]];
-		[attrDetail addAttributes:attributes range:[detail rangeOfString:VVLogSystemDuring]];
+		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemRequestType]];
+		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemHeader]];
+		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemRequest]];
+		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemResponse]];
+		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemTime]];
+		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemDuring]];
 		
 		[cell updateCellWithDetail:attrDetail];
 		[cell updateWihtModel:model];
 		return cell;
 	} else {
 		// 已收起
-		VVLogSystemTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:VVLogSystemTableViewCellId];
-		[cell setUpConstraintsWithType:VVLogSystemTableViewCellTypeTrackAndApi];
+		KTLogSystemTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:KTLogSystemTableViewCellId];
+		[cell setUpConstraintsWithType:KTLogSystemTableViewCellTypeTrackAndApi];
 		[cell updateCellWithDesc:model.url time:model.time];
 		return cell;
 	}
@@ -137,7 +137,7 @@ static NSString *const VVLogSystemError = @"#error#";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	ConsoleHttpModel *model = self.datas[indexPath.row];
+	KTHttpLogModel *model = self.datas[indexPath.row];
 	if (model.spread) {
 		model.spread = !model.spread;
 	} else {
@@ -167,22 +167,22 @@ static NSString *const VVLogSystemError = @"#error#";
 	NSString *detail = url;
 	detail = [detail stringByAppendingString:@"\n"];
 	if (type) {
-		detail = [detail stringByAppendingFormat:@"%@ %@\n", VVLogSystemRequestType, type];
+		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemRequestType, type];
 	}
 	if (header) {
-		detail = [detail stringByAppendingFormat:@"%@ %@\n", VVLogSystemHeader, header];
+		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemHeader, header];
 	}
 	if (request) {
-		detail = [detail stringByAppendingFormat:@"%@ %@\n", VVLogSystemRequest, dicRequest];
+		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemRequest, dicRequest];
 	}
 	if (response) {
-		detail = [detail stringByAppendingFormat:@"%@ %@\n", VVLogSystemResponse, dicResponse];
+		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemResponse, dicResponse];
 	}
 	if (time) {
-		detail = [detail stringByAppendingFormat:@"%@ %@\n", VVLogSystemTime, time];
+		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemTime, time];
 	}
 	if (during) {
-		detail = [detail stringByAppendingFormat:@"%@ %@", VVLogSystemDuring, during];
+		detail = [detail stringByAppendingFormat:@"%@ %@", KTLogSystemDuring, during];
 	}
 	
 	return detail;
@@ -204,8 +204,8 @@ static NSString *const VVLogSystemError = @"#error#";
 		_tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
 		_tableView.delegate = self;
 		_tableView.dataSource = self;
-		[_tableView registerClass:[VVLogSystemTableViewCell class] forCellReuseIdentifier:VVLogSystemTableViewCellId];
-		[_tableView registerClass:[VVLogSystemTableViewMoreCell class] forCellReuseIdentifier:VVLogSystemTableViewMoreCellId];
+		[_tableView registerClass:[KTLogSystemTableViewCell class] forCellReuseIdentifier:KTLogSystemTableViewCellId];
+		[_tableView registerClass:[KTLogSystemTableViewMoreCell class] forCellReuseIdentifier:KTLogSystemTableViewMoreCellId];
 	}
 	return _tableView;
 }

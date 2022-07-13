@@ -1,6 +1,5 @@
 //
-//  VVLogSystemTableViewCell.h
-//  Vova
+//  KTLogSystemTableViewCell.h
 //
 //  Created by KOTU on 2019/2/13.
 //  Copyright © 2019 iOS. All rights reserved.
@@ -10,14 +9,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSUInteger, VVLogSystemTableViewCellType) {
-    VVLogSystemTableViewCellTypeTrackAndApi = 0,  /// 打点、Api
-    VVLogSystemTableViewCellTypeRegression, /// 回归
+typedef NS_ENUM(NSUInteger, KTLogSystemTableViewCellType) {
+    KTLogSystemTableViewCellTypeTrackAndApi = 0,  /// 打点、Api
+    KTLogSystemTableViewCellTypeRegression, /// 回归
 };
 
-@interface VVLogSystemTableViewCell : UITableViewCell
+@interface KTLogSystemTableViewCell : UITableViewCell
 
-- (void)setUpConstraintsWithType:(VVLogSystemTableViewCellType)cellType;
+- (void)setUpConstraintsWithType:(KTLogSystemTableViewCellType)cellType;
 
 - (void)updateCellWithDesc:(NSString *)desc time:(NSString *)time;
 

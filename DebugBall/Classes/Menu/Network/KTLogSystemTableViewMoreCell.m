@@ -1,17 +1,16 @@
 //
-//  VVLogSystemTableViewMoreCell.m
-//  Vova
+//  KTLogSystemTableViewMoreCell.m
 //
 //  Created by KOTU on 2019/2/13.
 //  Copyright © 2019 iOS. All rights reserved.
 //
 
-#import "VVLogSystemTableViewMoreCell.h"
+#import "KTLogSystemTableViewMoreCell.h"
 #import <Masonry/Masonry.h>
-#import "ConsoleHttpModel.h"
+#import "KTHttpLogModel.h"
 #import "KTDebugBallUtils.h"
 
-@interface VVLogSystemTableViewMoreCell ()
+@interface KTLogSystemTableViewMoreCell ()
 
 @property (nonatomic, strong) UIButton *getDetailButton;
 @property (nonatomic, strong) UIImageView *iconImageView;
@@ -19,12 +18,12 @@
 @property (nonatomic, strong) id model;
 @end
 
-@implementation VVLogSystemTableViewMoreCell
+@implementation KTLogSystemTableViewMoreCell
 
 - (void)getDetailButtonTapped
 {
-	if ([self.model isKindOfClass:ConsoleHttpModel.class]) {
-		ConsoleHttpModel *httpModel = (ConsoleHttpModel *)self.model;
+	if ([self.model isKindOfClass:KTHttpLogModel.class]) {
+		KTHttpLogModel *httpModel = (KTHttpLogModel *)self.model;
 	
 		UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
 		pasteboard.string = httpModel.curlString;
@@ -91,7 +90,7 @@
 - (void)updateWihtModel:(id)model
 {
 	self.model = model;
-	self.getDetailButton.hidden = ![self.model isKindOfClass:ConsoleHttpModel.class];
+	self.getDetailButton.hidden = ![self.model isKindOfClass:KTHttpLogModel.class];
 }
 
 #pragma mark - GETTER

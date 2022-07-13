@@ -13,8 +13,8 @@
 
 #import <Aspects/Aspects.h>
 #import <AFNetworking/AFHTTPSessionManager.h>
-#import "NSURLSessionTask+VVHelp.h"
-#import "ConsoleHttpModel.h"
+#import "NSURLSessionTask+KTHelp.h"
+#import "KTHttpLogModel.h"
 #import <YYModel/YYModel.h>
 
 NSNotificationName const kDisplayBorderEnabled              = @"kDisplayBorderEnabled";
@@ -185,7 +185,7 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 - (void)initNetworkConfig
 {
 	NSArray *datas = [[NSUserDefaults standardUserDefaults] valueForKey:kRequestDatasCacheKey];
-	NSArray *models = [NSArray yy_modelArrayWithClass:[ConsoleHttpModel class] json:datas];
+	NSArray *models = [NSArray yy_modelArrayWithClass:[KTHttpLogModel class] json:datas];
 	self.requestDatas = [NSMutableArray arrayWithArray:models];
 	
 	NSMutableArray *array = [NSMutableArray array];
@@ -232,7 +232,7 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 				return;
 			}
 			
-			ConsoleHttpModel *model = [[ConsoleHttpModel alloc] init];
+			KTHttpLogModel *model = [[KTHttpLogModel alloc] init];
 			model.url = [dataTask.currentRequest.URL.absoluteString componentsSeparatedByString:@"?"][0];
 			model.type = dataTask.currentRequest.HTTPMethod;
 			NSMutableDictionary *params = dictionaryFromUrl(dataTask.currentRequest.URL.absoluteString);

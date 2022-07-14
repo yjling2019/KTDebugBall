@@ -27,6 +27,7 @@ static NSString * kCurrentH5DomainKey       = @"kCurrentH5DomainKey";
 static NSString * kHasInstalledDebugBall    = @"kHasInstalledDebugBall";
 
 NSString * const kRequestDatasCacheKey = @"com.kotu.debugball.data.RequestDatasCacheKey";
+NSString * const kDebugManagerInUse = @"com.kotu.debugball.data.consoleSystemInUse";
 
 @interface KTDebugManager ()
 
@@ -42,6 +43,19 @@ NSString * const kRequestDatasCacheKey = @"com.kotu.debugball.data.RequestDatasC
 // HTTP
 @property (nonatomic, strong) NSArray <id <AspectToken>> *httpHooks;
 @property (nonatomic, assign) BOOL isNetworkListening;
+
+
+// Dev Control
+@property (strong, nonatomic) NSMutableArray *currentActions;
+@property (strong, nonatomic) NSDate *startTime;
+
+@end
+
+@interface KTDebugManager (DebugView)
+
++ (void)installDebugView;
++ (void)uninstallDebugView;
++ (void)resetDebugBallAutoHidden;
 
 @end
 
@@ -59,6 +73,34 @@ NSString * const kRequestDatasCacheKey = @"com.kotu.debugball.data.RequestDatasC
 
 static BOOL __show = NO;
 static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *> *> * __data = nil;
+
+- (void)checkDebugBallStatus
+{
+	NSNumber *value = [[NSUserDefaults standardUserDefaults] valueForKey:kDebugManagerInUse];
+	
+	if (value && value.boolValue) {
+		[self initNetworkConfig];
+		[self startNetworkListening];
+		[KTDebugManager installDebugView];
+	} else {
+		[self uninitNetworkConfig];
+		[self stopNetworkListening];
+		[KTDebugManager dismissDebugActionMenuController];
+		[KTDebugManager uninstallDebugView];
+	}
+}
+
+- (void)updateDebugBallEnabled
+{
+	[[NSUserDefaults standardUserDefaults] setValue:@(YES) forKey:kDebugManagerInUse];
+	[self checkDebugBallStatus];
+}
+
+- (void)updateDebugBallUnenabled
+{
+	[[NSUserDefaults standardUserDefaults] setValue:@(NO) forKey:kDebugManagerInUse];
+	[self checkDebugBallStatus];
+}
 
 + (void)presentDebugActionMenuController
 {
@@ -306,6 +348,95 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 - (NSArray *)requests
 {
 	return self.requestDatas.copy;
+}
+
+@end
+
+static const void *kKTCurrentDebugToolActions = &kKTCurrentDebugToolActions;
+static const void *kKTCurrentDebugToolActionStartTime = &kKTCurrentDebugToolActionStartTime;
+
+@implementation KTDebugManager (DevControl)
+
+- (void)setCurrentActions:(NSMutableArray *)currentActions
+{
+	objc_setAssociatedObject(self, kKTCurrentDebugToolActions, currentActions, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSMutableArray *)currentActions
+{
+	NSMutableArray *array = objc_getAssociatedObject(self, kKTCurrentDebugToolActions);
+	if (!array) {
+		array = [NSMutableArray array];
+		self.currentActions = array;
+	}
+	return array;
+}
+
+- (void)setStartTime:(NSDate *)startTime
+{
+	objc_setAssociatedObject(self, kKTCurrentDebugToolActionStartTime, startTime, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSDate *)startTime
+{
+	NSDate *date = objc_getAssociatedObject(self, kKTCurrentDebugToolActionStartTime);
+	return date;
+}
+
+- (void)resetActions
+{
+	[self.currentActions removeAllObjects];
+	self.startTime = nil;
+}
+
+- (void)didReciveAction:(NSString *)actionName
+{
+	if ([[[NSUserDefaults standardUserDefaults] valueForKey:kDebugManagerInUse] boolValue]) {
+		NSLog(@"KTDebugManager: already work");
+		return;
+	}
+	
+	if (self.currentActions.count >= self.debugToolActions.count) {
+		return;
+	}
+	
+	NSInteger nextIndex = self.currentActions.count;
+	NSString *nextAction = self.debugToolActions[nextIndex];
+	if (![nextAction isEqualToString:actionName]) {
+		//事件不匹配
+		NSLog(@"KTDebugManager: action error");
+		[self resetActions];
+		return;
+	}
+	
+	if (self.currentActions.count == 0) {
+		self.startTime = [NSDate date];
+	}
+	
+	if ([[NSDate date] timeIntervalSinceDate:self.startTime] > self.timeout) {
+		//超时
+		NSLog(@"KTDebugManager: time out");
+		[self resetActions];
+		return;
+	}
+	
+	[self.currentActions addObject:actionName];
+	
+	if (self.currentActions.count == self.debugToolActions.count) {
+		NSLog(@"KTDebugManager: show debug ball");
+		[self resetActions];
+		[self updateDebugBallEnabled];
+	}
+}
+
+- (NSTimeInterval)timeout
+{
+	return 60;
+}
+
+- (NSArray *)debugToolActions
+{
+	return @[@"A", @"A", @"B", @"B", @"B"];
 }
 
 @end

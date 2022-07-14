@@ -17,20 +17,10 @@ static NSString * const kRequestDataChangeNotification = @"kRequestDataChangeNot
 
 + (instancetype)sharedManager;
 + (void)presentDebugActionMenuController;
+- (void)checkDebugBallStatus;
+- (void)updateDebugBallUnenabled;
 
 @end
-
-
-@interface KTDebugManager (DebugView)
-
-+ (void)installDebugView;
-
-+ (void)uninstallDebugView;
-
-+ (void)resetDebugBallAutoHidden;
-
-@end
-
 
 @interface KTDebugManager (Network)
 
@@ -44,5 +34,11 @@ static NSString * const kRequestDataChangeNotification = @"kRequestDataChangeNot
 - (void)clearRequestLogs;
 
 @end
+
+@interface KTDebugManager (DevControl)
+- (void)didReciveAction:(NSString *)actionName;
+- (void)resetActions;
+@end
+
 
 NS_ASSUME_NONNULL_END

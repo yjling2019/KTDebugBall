@@ -9,6 +9,7 @@
 #import <Masonry/Masonry.h>
 #import "KTDebugMenuModel.h"
 #import "KTDebugNetworkController.h"
+#import "KTDebugManager.h"
 
 @interface KTDebugMenuController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -65,9 +66,9 @@
 		KTDebugMenuModel *model = [[KTDebugMenuModel alloc] init];
 		model.title = @"Tools";
 		
-		KTDebugMenuItemModel *item1 = [[KTDebugMenuItemModel alloc] init];
-		item1.title = @"Display debug mask view for all visible views";
-		item1.isSwitch = YES;
+//		KTDebugMenuItemModel *item1 = [[KTDebugMenuItemModel alloc] init];
+//		item1.title = @"Display debug mask view for all visible views";
+//		item1.isSwitch = YES;
 
 		KTDebugMenuItemModel *item2 = [[KTDebugMenuItemModel alloc] init];
 		item2.title = @"Display network sniffer";
@@ -85,7 +86,7 @@
 		item5.value = @"Display custom shortcut actions";
 		item5.isShowMore = YES;
 
-		model.items = @[item1, item2, item3, item4, item5];
+		model.items = @[item2, item3, item4, item5];
 		model;
 	});
 	
@@ -94,14 +95,10 @@
 		model.title = @"DebugBall Configuration";
 		
 		KTDebugMenuItemModel *item1 = [[KTDebugMenuItemModel alloc] init];
-		item1.title = @"Enable auto-hidden for the DebugBall";
+		item1.title = @"DebugBall Enable";
 		item1.isSwitch = YES;
 		
-		KTDebugMenuItemModel *item2 = [[KTDebugMenuItemModel alloc] init];
-		item2.title = @"Dismiss debug-ball until application relaunch";
-		item2.isSwitch = YES;
-
-		model.items = @[item1, item2];
+		model.items = @[item1];
 		model;
 	});
 	
@@ -170,6 +167,13 @@
 	
 	if (item.isShowMore) {
 		cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	} else if (item.isSwitch) {
+		UISwitch *sw = [[UISwitch alloc] init];
+		cell.accessoryView = sw;
+		[sw setOn:YES];
+		[sw addTarget:self action:@selector(hideDebugBall) forControlEvents:UIControlEventValueChanged];
+	} else {
+		cell.accessoryType = UITableViewCellAccessoryNone;
 	}
 	
 	return cell;
@@ -183,6 +187,12 @@
 	if ([item.title isEqualToString:@"Display network sniffer"]) {
 		[self.navigationController pushViewController:KTDebugNetworkController.new animated:YES];
 	}
+}
+
+#pragma mark - action
+- (void)hideDebugBall
+{
+	[DebugSharedManager updateDebugBallUnenabled];
 }
 
 #pragma mark - lazy load

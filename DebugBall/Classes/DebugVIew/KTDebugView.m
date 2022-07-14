@@ -126,7 +126,7 @@ Action * const kKTDebugViewTapActionDisplayActionMenu = @"kKTDebugViewTapActionD
         [UIView animateWithDuration:animateDuration animations:^{
             self.alpha = 0;
         } completion:^(BOOL finished) {
-            if (finished) [self removeFromSuperview];
+			[self removeFromSuperview];
         }];
         return self;
     };

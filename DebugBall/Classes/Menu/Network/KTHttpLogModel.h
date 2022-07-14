@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property NSString *create_time;
 
 @property BOOL spread;
+@property CGFloat textHeight;
 
 @property (nonatomic, copy) NSString * curlString;
 

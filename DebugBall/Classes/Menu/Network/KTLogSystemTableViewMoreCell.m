@@ -14,8 +14,9 @@
 
 @property (nonatomic, strong) UIButton *getDetailButton;
 @property (nonatomic, strong) UIImageView *iconImageView;
-@property (nonatomic, strong) UILabel *detailLabel;
 @property (nonatomic, strong) id model;
+@property (nonatomic, strong) UITextView *textView;
+
 @end
 
 @implementation KTLogSystemTableViewMoreCell
@@ -59,7 +60,8 @@
 {
 	self.selectionStyle = UITableViewCellSelectionStyleNone;
 	self.accessoryType = UITableViewCellAccessoryNone;
-	[self.contentView addSubview:self.detailLabel];
+//	[self.contentView addSubview:self.detailLabel];
+	[self.contentView addSubview:self.textView];
 	[self.contentView addSubview:self.iconImageView];
 	[self.contentView addSubview:self.getDetailButton];
 }
@@ -72,7 +74,7 @@
 		make.width.height.mas_equalTo((10));
 	}];
 	
-	[self.detailLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+	[self.textView mas_makeConstraints:^(MASConstraintMaker *make) {
 		make.edges.insets(UIEdgeInsetsMake(10, 15, 10, 15));
 	}];
 	
@@ -84,7 +86,7 @@
 
 - (void)updateCellWithDetail:(NSAttributedString *)detail
 {
-	_detailLabel.attributedText = detail;
+	_textView.attributedText = detail;
 }
 
 - (void)updateWihtModel:(id)model
@@ -116,15 +118,13 @@
 	return _iconImageView;
 }
 
-- (UILabel *)detailLabel
+- (UITextView *)textView
 {
-	if (!_detailLabel) {
-		_detailLabel = [[UILabel alloc] init];
-		_detailLabel.numberOfLines = 0;
-		_detailLabel.userInteractionEnabled = YES;
-		[_detailLabel addGestureRecognizer:[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(getDetailButtonTapped)]];
+	if (!_textView) {
+		_textView = [[UITextView alloc] init];
+		_textView.userInteractionEnabled = NO;
 	}
-	return _detailLabel;
+	return _textView;
 }
 
 @end

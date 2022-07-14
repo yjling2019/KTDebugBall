@@ -383,6 +383,11 @@ static const void *kKTCurrentDebugToolActionStartTime = &kKTCurrentDebugToolActi
 	return date;
 }
 
+- (void)autoEnableOnDebug
+{
+	[[NSUserDefaults standardUserDefaults] setValue:@(YES) forKey:kDebugManagerInUse];
+}
+
 - (void)resetActions
 {
 	[self.currentActions removeAllObjects];

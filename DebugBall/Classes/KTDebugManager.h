@@ -36,6 +36,7 @@ static NSString * const kRequestDataChangeNotification = @"kRequestDataChangeNot
 @end
 
 @interface KTDebugManager (DevControl)
+- (void)autoEnableOnDebug;
 - (void)didReciveAction:(NSString *)actionName;
 - (void)resetActions;
 @end

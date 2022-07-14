@@ -78,22 +78,25 @@ static NSString *const KTLogSystemError = @"#error#";
 {
 	KTHttpLogModel *model = self.datas[indexPath.row];
 	if (model.spread) {
-		NSString *detail = [self compomentDetailWithUrl:model.url
-												   type:model.type
-												 header:model.header
-												request:model.request
-											   response:model.response
-												   time:model.time
-												 during:model.during];
-		
-		UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width - (30), 0)];
-		tempLabel.numberOfLines = 0;
-		tempLabel.font = [UIFont systemFontOfSize:(10)];
-		tempLabel.text = detail;
-		CGFloat height = [tempLabel sizeThatFits:CGSizeMake([UIScreen mainScreen].bounds.size.width - (30), 0)].height + 1;
-		return height + (50);// 文字高度 + 按钮高度
+		if (model.textHeight == 0) {
+			NSString *detail = [self compomentDetailWithUrl:model.url
+													   type:model.type
+													 header:model.header
+													request:model.request
+												   response:model.response
+													   time:model.time
+													 during:model.during];
+			
+			UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width - (30), 0)];
+			tempLabel.numberOfLines = 0;
+			tempLabel.font = [UIFont systemFontOfSize:(10)];
+			tempLabel.text = detail;
+			CGFloat height = [tempLabel sizeThatFits:CGSizeMake([UIScreen mainScreen].bounds.size.width - (30), 0)].height + 1;
+			model.textHeight = height;
+		}
+		return model.textHeight + 50;// 文字高度 + 按钮高度
 	} else {
-		return (40);
+		return 40;
 	}
 }
 
@@ -185,7 +188,15 @@ static NSString *const KTLogSystemError = @"#error#";
 		detail = [detail stringByAppendingFormat:@"%@ %@", KTLogSystemDuring, during];
 	}
 	
-	return detail;
+	NSMutableString *convertedString = [detail mutableCopy];
+	[convertedString replaceOccurrencesOfString:@"\\U"
+									 withString:@"\\u"
+										options:0
+										  range:NSMakeRange(0, convertedString.length)];
+	CFStringRef transform = CFSTR("Any-Hex/Java");
+	CFStringTransform((__bridge CFMutableStringRef)convertedString, NULL, transform, YES);
+	
+	return convertedString;
 }
 
 - (void)reloadData

@@ -280,11 +280,13 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 			NSMutableDictionary *params = dictionaryFromUrl(dataTask.currentRequest.URL.absoluteString);
 			if (![model.type isEqualToString:@"GET"]) {
 				// Post/Put/Delete
-				NSDictionary *bodyParams = [NSJSONSerialization JSONObjectWithData:[dataTask.originalRequest HTTPBody]
-																	options:NSJSONReadingMutableContainers
-																	  error:nil];
-				
-				[params addEntriesFromDictionary:bodyParams];
+				if (dataTask.originalRequest.HTTPBody) {
+					NSDictionary *bodyParams = [NSJSONSerialization JSONObjectWithData:[dataTask.originalRequest HTTPBody]
+																		options:NSJSONReadingMutableContainers
+																		  error:nil];
+					
+					[params addEntriesFromDictionary:bodyParams];
+				}
 			}
 			model.request = requestFromDict(params);
 			model.header = headerFromDict(params);

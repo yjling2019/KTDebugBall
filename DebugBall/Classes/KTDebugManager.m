@@ -305,7 +305,7 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 				model.time = [formatter stringFromDate:startDate];
 				model.during = [NSString stringWithFormat:@"%.0fms", ([[NSDate new] timeIntervalSince1970] - [startDate timeIntervalSince1970]) * 1000.0];
 			}
-		
+			[model setUpCurlStringWithRequest:dataTask.originalRequest];
 			[self.requestDatas insertObject:model atIndex:0];
 			
 			NSArray *datas = [self.requestDatas yy_modelToJSONObject];

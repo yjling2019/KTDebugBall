@@ -17,6 +17,7 @@
 	NSString *host = URL.host;
 	if (!URL || !host) {
 		self.curlString = @"curl command could not be created";
+		NSAssert(NO, @"curl command could not be created");
 		return;
 	}
 

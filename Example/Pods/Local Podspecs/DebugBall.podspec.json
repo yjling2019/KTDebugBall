@@ -19,6 +19,11 @@
     "ios": "10.0"
   },
   "source_files": "DebugBall/Classes/**/*",
+  "resource_bundles": {
+    "DebugBall": [
+      "DebugBall/Assets/*.png"
+    ]
+  },
   "dependencies": {
     "Masonry": [
 

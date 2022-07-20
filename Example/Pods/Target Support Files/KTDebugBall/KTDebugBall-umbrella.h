@@ -25,6 +25,6 @@
 #import "KTDebugViewMacros.h"
 #import "UIDevice+DBHardware.h"
 
-FOUNDATION_EXPORT double DebugBallVersionNumber;
-FOUNDATION_EXPORT const unsigned char DebugBallVersionString[];
+FOUNDATION_EXPORT double KTDebugBallVersionNumber;
+FOUNDATION_EXPORT const unsigned char KTDebugBallVersionString[];
 

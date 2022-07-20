@@ -14,7 +14,7 @@
 #define kDebugBallRequestHeaderKeys @[@"uuid", @"uid", @"access_token", @"country_code", @"currency", @"s", @"idfa", @"organic_idfv", @"req_time", @"sign", @"timezone"];
 
 static inline NSBundle *DebugBallBundle(void) {
-	NSString *podName = @"DebugBall";
+	NSString *podName = @"KTDebugBall";
 	
 	NSBundle *bundle = [NSBundle bundleForClass:NSClassFromString(podName)];
 	NSURL * url = [bundle URLForResource:podName withExtension:@"bundle"];

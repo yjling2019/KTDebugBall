@@ -3,7 +3,7 @@ use_frameworks!
 platform :ios, '10.0'
 
 target 'DebugBall_Example' do
-  pod 'DebugBall', :path => '../'
+  pod 'KTDebugBall', :path => '../'
 
   target 'DebugBall_Tests' do
     inherit! :search_paths

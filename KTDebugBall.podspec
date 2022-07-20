@@ -24,16 +24,16 @@ TODO: Add long description of the pod here.
   s.homepage         = 'https://github.com/yjling2019/KTDebugBall'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'ling' => 'lingyj2014@gmail.com' }
+  s.author           = { 'KOTU' => 'lingyj2014@gmail.com' }
   s.source           = { :git => 'https://github.com/yjling2019/KTDebugBall.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '10.0'
 
-  s.source_files = 'DebugBall/Classes/**/*'
+  s.source_files = 'KTDebugBall/Classes/**/*'
   
   s.resource_bundles = {
-    'DebugBall' => ['DebugBall/Assets/*.png']
+    'KTDebugBall' => ['KTDebugBall/Assets/*.png']
   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'

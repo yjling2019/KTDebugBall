@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'DebugBall'
   s.version          = '0.1.0'
-  s.summary          = 'A short description of DebugBall.'
+  s.summary          = 'KOTU\'s Debug Utils'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -21,11 +21,11 @@ Pod::Spec.new do |s|
 TODO: Add long description of the pod here.
                        DESC
 
-  s.homepage         = 'https://github.com/ling/DebugBall'
+  s.homepage         = 'https://github.com/yjling2019/DebugBall'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'ling' => 'lingyj2014@gmail.com' }
-  s.source           = { :git => 'https://github.com/ling/DebugBall.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/yjling2019/DebugBall.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
   s.ios.deployment_target = '10.0'

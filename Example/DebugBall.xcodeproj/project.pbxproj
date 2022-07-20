@@ -63,7 +63,7 @@
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7C63368A1B0EDDF1185AD500 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		B68A66B0460F83450AA19BAE /* DebugBall.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = DebugBall.podspec; path = ../DebugBall.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		B68A66B0460F83450AA19BAE /* KTDebugBall.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = KTDebugBall.podspec; path = ../KTDebugBall.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		D2976830D1EC6CCD6981EC29 /* Pods-DebugBall_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugBall_Tests.release.xcconfig"; path = "Target Support Files/Pods-DebugBall_Tests/Pods-DebugBall_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		DE07473AE4B7309A5B94873B /* Pods_DebugBall_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DebugBall_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDA8EE1C0C601CC57A6C8170 /* Pods-DebugBall_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugBall_Example.release.xcconfig"; path = "Target Support Files/Pods-DebugBall_Example/Pods-DebugBall_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -189,7 +189,7 @@
 		60FF7A9C1954A5C5007DD14C /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				B68A66B0460F83450AA19BAE /* DebugBall.podspec */,
+				B68A66B0460F83450AA19BAE /* KTDebugBall.podspec */,
 				125D0D971125FA64A825E1E1 /* README.md */,
 				7C63368A1B0EDDF1185AD500 /* LICENSE */,
 			);

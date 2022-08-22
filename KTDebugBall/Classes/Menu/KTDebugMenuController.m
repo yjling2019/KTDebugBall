@@ -64,15 +64,39 @@
 	
 	KTDebugMenuModel *m3 = ({
 		KTDebugMenuModel *model = [[KTDebugMenuModel alloc] init];
+		model.title = @"Network";
+
+		KTDebugMenuItemModel *item1 = [[KTDebugMenuItemModel alloc] init];
+		item1.title = @"Logs";
+		item1.isShowMore = YES;
+		
+		KTDebugMenuItemModel *item2 = [[KTDebugMenuItemModel alloc] init];
+		item2.title = @"Failed requests";
+		item2.isShowMore = YES;
+		
+		KTDebugMenuItemModel *item3 = [[KTDebugMenuItemModel alloc] init];
+		item3.title = @"Missing inspection";
+		item3.isShowMore = YES;
+		
+		KTDebugMenuItemModel *item4 = [[KTDebugMenuItemModel alloc] init];
+		item4.title = @"Filter";
+		item4.isShowMore = YES;
+
+		model.items = @[item1, item2, item3, item4];
+		model;
+	});
+	
+	KTDebugMenuModel *m4 = ({
+		KTDebugMenuModel *model = [[KTDebugMenuModel alloc] init];
 		model.title = @"Tools";
 		
 //		KTDebugMenuItemModel *item1 = [[KTDebugMenuItemModel alloc] init];
 //		item1.title = @"Display debug mask view for all visible views";
 //		item1.isSwitch = YES;
 
-		KTDebugMenuItemModel *item2 = [[KTDebugMenuItemModel alloc] init];
-		item2.title = @"Display network sniffer";
-		item2.isShowMore = YES;
+//		KTDebugMenuItemModel *item2 = [[KTDebugMenuItemModel alloc] init];
+//		item2.title = @"Display network sniffer";
+//		item2.isShowMore = YES;
 		
 		KTDebugMenuItemModel *item3 = [[KTDebugMenuItemModel alloc] init];
 		item3.title = @"Display crash asserts & stacks";
@@ -86,11 +110,11 @@
 		item5.value = @"Display custom shortcut actions";
 		item5.isShowMore = YES;
 
-		model.items = @[item2, item3, item4, item5];
+		model.items = @[item3, item4, item5];
 		model;
 	});
 	
-	KTDebugMenuModel *m4 = ({
+	KTDebugMenuModel *m5 = ({
 		KTDebugMenuModel *model = [[KTDebugMenuModel alloc] init];
 		model.title = @"DebugBall Configuration";
 		
@@ -102,7 +126,7 @@
 		model;
 	});
 	
-	self.datas = @[m1, m2, m3, m4];
+	self.datas = @[m1, m2, m3, m4, m5];
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
@@ -184,7 +208,7 @@
 	KTDebugMenuModel *model = [self.datas objectAtIndex:indexPath.section];
 	KTDebugMenuItemModel *item = [model.items objectAtIndex:indexPath.row];
 	
-	if ([item.title isEqualToString:@"Display network sniffer"]) {
+	if ([item.title isEqualToString:@"Logs"]) {
 		[self.navigationController pushViewController:KTDebugNetworkController.new animated:YES];
 	}
 }

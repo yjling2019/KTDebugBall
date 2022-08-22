@@ -17,9 +17,10 @@ static NSString *const KTLogSystemTableViewCellId = @"KTLogSystemTableViewCellId
 static NSString *const KTLogSystemTableViewMoreCellId = @"KTLogSystemTableViewMoreCellId";
 
 static NSString *const KTLogSystemRequestType = @"#type#";
-static NSString *const KTLogSystemHeader = @"#request-public#";
-static NSString *const KTLogSystemRequest = @"#request-other#";
+static NSString *const KTLogSystemHeader = @"#request-header#";
+static NSString *const KTLogSystemRequest = @"#request-params#";
 static NSString *const KTLogSystemResponse = @"#response#";
+static NSString *const KTLogSystemStatusCode = @"#http_code#";
 static NSString *const KTLogSystemTime = @"#time#";
 static NSString *const KTLogSystemDuring = @"#during#";
 //static NSString *const KTLogSystemParams = @"#params#";
@@ -84,6 +85,7 @@ static NSString *const KTLogSystemError = @"#error#";
 													 header:model.header
 													request:model.request
 												   response:model.response
+												 statusCode:model.statusCode
 													   time:model.time
 													 during:model.during];
 			
@@ -111,6 +113,7 @@ static NSString *const KTLogSystemError = @"#error#";
 												 header:model.header
 												request:model.request
 											   response:model.response
+											 statusCode:model.statusCode
 												   time:model.time
 												 during:model.during];
 		
@@ -123,9 +126,9 @@ static NSString *const KTLogSystemError = @"#error#";
 		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemHeader]];
 		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemRequest]];
 		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemResponse]];
+		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemStatusCode]];
 		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemTime]];
 		[attrDetail addAttributes:attributes range:[detail rangeOfString:KTLogSystemDuring]];
-		
 		[cell updateCellWithDetail:attrDetail];
 		[cell updateWihtModel:model];
 		return cell;
@@ -133,7 +136,8 @@ static NSString *const KTLogSystemError = @"#error#";
 		// 已收起
 		KTLogSystemTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:KTLogSystemTableViewCellId];
 		[cell setUpConstraintsWithType:KTLogSystemTableViewCellTypeTrackAndApi];
-		[cell updateCellWithDesc:model.url time:model.time];
+//		[cell updateCellWithDesc:model.url time:model.time];
+		[cell updateHttpLogModel:model];
 		return cell;
 	}
 }
@@ -154,6 +158,7 @@ static NSString *const KTLogSystemError = @"#error#";
 							  header:(NSString *)header
 							 request:(NSString *)request
 							response:(NSString *)response
+						  statusCode:(NSString *)statusCode
 								time:(NSString *)time
 							  during:(NSString *)during
 {
@@ -179,7 +184,14 @@ static NSString *const KTLogSystemError = @"#error#";
 		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemRequest, dicRequest];
 	}
 	if (response) {
-		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemResponse, dicResponse];
+		if (dicResponse) {
+			detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemResponse, dicResponse];
+		} else {
+			detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemResponse, response];
+		}
+	}
+	if (statusCode) {
+		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemStatusCode, statusCode];
 	}
 	if (time) {
 		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemTime, time];

@@ -16,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property NSString *header;
 @property NSString *http_header;
 @property NSString *request;
+@property NSString *statusCode;
 @property NSString *response;
 @property NSString *time;
 @property NSString *during;
@@ -23,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property BOOL spread;
 @property CGFloat textHeight;
+
+@property NSString *business_error;
 
 @property (nonatomic, copy) NSString * curlString;
 

@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "KTHttpLogModel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,19 +19,21 @@ typedef NS_ENUM(NSUInteger, KTLogSystemTableViewCellType) {
 
 - (void)setUpConstraintsWithType:(KTLogSystemTableViewCellType)cellType;
 
-- (void)updateCellWithDesc:(NSString *)desc time:(NSString *)time;
+- (void)updateHttpLogModel:(KTHttpLogModel *)model;
 
-- (void)updateCellWithPageCode:(NSString *)pageCode
-                   elementName:(NSString *)elementName
-                          type:(NSString *)type
-                          time:(NSString *)time
-                        detail:(NSAttributedString *)detail
-                       warning:(NSString *)warning
-                isMatchService:(BOOL)isMatchService;
-
-- (void)updateRegressionCellWithParam:(NSDictionary *)param
-                            trackType:(NSString *)type
-                       isMatchService:(BOOL)isMatchService;
+//- (void)updateCellWithDesc:(NSString *)desc time:(NSString *)time;
+//
+//- (void)updateCellWithPageCode:(NSString *)pageCode
+//                   elementName:(NSString *)elementName
+//                          type:(NSString *)type
+//                          time:(NSString *)time
+//                        detail:(NSAttributedString *)detail
+//                       warning:(NSString *)warning
+//                isMatchService:(BOOL)isMatchService;
+//
+//- (void)updateRegressionCellWithParam:(NSDictionary *)param
+//                            trackType:(NSString *)type
+//                       isMatchService:(BOOL)isMatchService;
 
 @end
 

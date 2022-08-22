@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "KTDebugNetworkUtils.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -23,6 +24,8 @@ static NSString * const kRequestDataChangeNotification = @"kRequestDataChangeNot
 @end
 
 @interface KTDebugManager (Network)
+
+@property (nonatomic, strong) Class<KTDebugNetworkUtils> networkUtils;
 
 @property (nonatomic, strong, readonly) NSArray *requests;
 

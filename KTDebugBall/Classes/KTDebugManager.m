@@ -224,6 +224,16 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 
 @implementation KTDebugManager (Network)
 
+- (void)setNetworkUtils:(Class<KTDebugNetworkUtils>)networkUtils
+{
+	objc_setAssociatedObject(self, @selector(networkUtils), networkUtils, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (Class<KTDebugNetworkUtils>)networkUtils
+{
+	return objc_getAssociatedObject(self, _cmd);
+}
+
 - (void)initNetworkConfig
 {
 	NSArray *datas = [[NSUserDefaults standardUserDefaults] valueForKey:kRequestDatasCacheKey];
@@ -298,6 +308,10 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 				model.response = responseStr;
 			}
 			
+			if (dataTask.response) {
+				model.statusCode = @(((NSHTTPURLResponse *)dataTask.response).statusCode).stringValue;
+			}
+			
 			NSDate *startDate = dataTask.kt_requestBeginDate;
 			if (startDate) {
 				NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
@@ -307,6 +321,11 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 			}
 			[model setUpCurlStringWithRequest:dataTask.originalRequest];
 			[self.requestDatas insertObject:model atIndex:0];
+			
+			if (DebugSharedManager.networkUtils &&
+				[DebugSharedManager.networkUtils respondsToSelector:@selector(businessErrorOfRequest:)]) {
+				model.business_error = [DebugSharedManager.networkUtils businessErrorOfRequest:model];
+			}
 			
 			NSArray *datas = [self.requestDatas yy_modelToJSONObject];
 			[[NSUserDefaults standardUserDefaults] setValue:datas forKey:kRequestDatasCacheKey];

@@ -32,6 +32,7 @@
 @property (nonatomic, strong) UIImageView *iconImageView;
 @property (nonatomic, strong) UILabel *descLabel;
 @property (nonatomic, strong) UILabel *timeLabel;
+@property (nonatomic, strong) UILabel *statusLabel;
 
 @property (nonatomic, strong) UILabel *label1;  // 打点 pageCodeLb
 @property (nonatomic, strong) UILabel *label2;  // 打点 elementNameLb
@@ -110,19 +111,19 @@
 			make.height.equalTo(@10);
 		}];
 		
+		[self.statusLabel mas_updateConstraints:^(MASConstraintMaker *make) {
+			make.trailing.equalTo(self.headerContentView).offset(-8);
+			make.bottom.equalTo(@0);
+			make.height.equalTo(@10);
+		}];
+		
 		[self.warningLb mas_makeConstraints:^(MASConstraintMaker *make) {
 			make.trailing.equalTo(@-2);
 			make.bottom.equalTo(self.detailLabel).offset(-3);
 			make.width.equalTo(@30);
 			make.height.equalTo(@18);
 		}];
-	}else {
-		//        [self.regressionStateIV mas_makeConstraints:^(MASConstraintMaker *make) {
-		//            make.centerY.equalTo(self);
-		//            make.size.mas_offset(CGSizeMake(15, 15));
-		//            make.trailing.equalTo(@5);
-		//        }];
-		
+	} else {
 		[self.warningLb mas_makeConstraints:^(MASConstraintMaker *make) {
 			make.trailing.equalTo(@-2);
 			make.centerY.equalTo(__weakSelf.headerContentView);
@@ -151,10 +152,10 @@
 	}];
 }
 
-- (void)updateCellWithDesc:(NSString *)desc time:(NSString *)time
+- (void)updateHttpLogModel:(KTHttpLogModel *)model
 {
-	_descLabel.text = desc;
-	_timeLabel.text = time;
+	_descLabel.text = model.url;
+	_timeLabel.text = model.time;
 	_descLabel.hidden = NO;
 	_label1.hidden = YES;
 	_label2.hidden = YES;
@@ -162,109 +163,132 @@
 	_warningLb.hidden = YES;
 	self.detailLabel.attributedText = nil;
 	self.iconImageView.image = DebugBallImageWithNamed(@"console_arrow_fold");
-}
-
-- (void)updateCellWithPageCode:(NSString *)pageCode
-				   elementName:(NSString *)elementName
-						  type:(NSString *)type
-						  time:(NSString *)time
-						detail:(NSAttributedString *)detail
-					   warning:(NSString *)warning
-				isMatchService:(BOOL)isMatchService
-{
-	_descLabel.hidden = YES;
-	_label1.hidden = NO;
-	_label2.hidden = NO;
-	_label3.hidden = NO;
 	
-	_label1.text = [NSString stringWithFormat:@" %@ ",pageCode];
-	_label2.text = [NSString stringWithFormat:@" %@ ",type];
-	_label3.text = [NSString stringWithFormat:@" %@ ",elementName];
-	_timeLabel.text = time;
-	_warningLb.text = @"重复";
-	
-	if ([type isEqualToString:@"data"]) {
-		_label1.text = [NSString stringWithFormat:@" data | %@ ",elementName];
-		_label1.textColor = RGB_HEX(0x323232);
-		_label2.hidden = YES;
-		_label3.hidden = YES;
-	}else if (!elementName || !elementName.length) {
-		_label1.textColor = RGB_HEX(0xE58101);
-		_label2.hidden = NO;
-		_label3.hidden = YES;
-	}else {
-		_label1.textColor = RGB_HEX(0xE58101);
-		_label2.hidden = NO;
-		_label3.hidden = NO;
-	}
-	
-	self.detailLabel.attributedText = detail;
-	
-	if (detail) {
-		self.iconImageView.image = DebugBallImageWithNamed(@"console_arrow_unfold");
+	 if (model.statusCode.integerValue != 200) {
+		self.statusLabel.text = @"网络错误";
+		self.statusLabel.hidden = NO;
+	 } else if (model.business_error) {
+		 self.statusLabel.text = model.business_error;
+		 self.statusLabel.hidden = NO;
 	} else {
-		self.iconImageView.image = DebugBallImageWithNamed(@"console_arrow_fold");
+		self.statusLabel.hidden = YES;
 	}
-	
-	_warningLb.backgroundColor = RGB_HEX(0xE02020);
-	if (warning) {
-		_warningLb.hidden = NO;
-		_warningLb.text = warning;
-	}else {
-		_warningLb.hidden = YES;
-	}
-	
-	[self _addVerticalView];
 }
 
-- (void)updateRegressionCellWithParam:(NSDictionary *)param trackType:(NSString *)type isMatchService:(BOOL)isMatchService
-{
-	type = @"common_impression";
-	param = @{@"list_uri" : @"ffffff", @"list_name": @"ffffsssssss"};
-	_descLabel.hidden = YES;
-	_label1.hidden = NO;
-	_label2.hidden = NO;
-	_label3.hidden = NO;
-	_warningLb.hidden = NO;
-	
-	self.label1.text = param[@"event"];
-	
-	if ([type isEqualToString:@"pageview"]) {
-		self.label2.text = param[@"page_code"];
-	}
-	
-	else if ([type isEqualToString:@"common_click-link_click"]) {
-		self.label2.text = param[@"element_name"];
-	}
-	
-	else if ([type isEqualToString:@"common_impression"]) {
-		self.label2.text = param[@"list_uri"];
-		self.label3.text = param[@"list_name"];
-	}
-	
-	else if ([type isEqualToString:@"goods_click-link_click"]) {
-		self.label2.text = param[@"list_uri"];
-	}
-	
-	else if ([type isEqualToString:@"goods_impression"]) {
-		self.label2.text = param[@"list_uri"];
-	}
-	
-	else if ([type isEqualToString:@"impression"]) {
-		self.label2.text = param[@"element_name"];
-	}
-	
-	else if ([type isEqualToString:@"data"]) {
-		self.label2.text = param[@"element_name"];
-	}
-	
-	_warningLb.backgroundColor = [UIColor clearColor];
-	if (isMatchService) {
-		_warningLb.text = @"✅";
-	}else {
-		_warningLb.text = @"❌";
-	}
-}
+//- (void)updateCellWithDesc:(NSString *)desc time:(NSString *)time
+//{
+//	_descLabel.text = desc;
+//	_timeLabel.text = time;
+//	_descLabel.hidden = NO;
+//	_label1.hidden = YES;
+//	_label2.hidden = YES;
+//	_label3.hidden = YES;
+//	_warningLb.hidden = YES;
+//	self.detailLabel.attributedText = nil;
+//	self.iconImageView.image = DebugBallImageWithNamed(@"console_arrow_fold");
+//}
+//
+//- (void)updateCellWithPageCode:(NSString *)pageCode
+//				   elementName:(NSString *)elementName
+//						  type:(NSString *)type
+//						  time:(NSString *)time
+//						detail:(NSAttributedString *)detail
+//					   warning:(NSString *)warning
+//				isMatchService:(BOOL)isMatchService
+//{
+//	_descLabel.hidden = YES;
+//	_label1.hidden = NO;
+//	_label2.hidden = NO;
+//	_label3.hidden = NO;
+//
+//	_label1.text = [NSString stringWithFormat:@" %@ ",pageCode];
+//	_label2.text = [NSString stringWithFormat:@" %@ ",type];
+//	_label3.text = [NSString stringWithFormat:@" %@ ",elementName];
+//	_timeLabel.text = time;
+//	_warningLb.text = @"重复";
+//
+//	if ([type isEqualToString:@"data"]) {
+//		_label1.text = [NSString stringWithFormat:@" data | %@ ",elementName];
+//		_label1.textColor = RGB_HEX(0x323232);
+//		_label2.hidden = YES;
+//		_label3.hidden = YES;
+//	} else if (!elementName || !elementName.length) {
+//		_label1.textColor = RGB_HEX(0xE58101);
+//		_label2.hidden = NO;
+//		_label3.hidden = YES;
+//	} else {
+//		_label1.textColor = RGB_HEX(0xE58101);
+//		_label2.hidden = NO;
+//		_label3.hidden = NO;
+//	}
+//
+//	self.detailLabel.attributedText = detail;
+//
+//	if (detail) {
+//		self.iconImageView.image = DebugBallImageWithNamed(@"console_arrow_unfold");
+//	} else {
+//		self.iconImageView.image = DebugBallImageWithNamed(@"console_arrow_fold");
+//	}
+//
+//	_warningLb.backgroundColor = RGB_HEX(0xE02020);
+//	if (warning) {
+//		_warningLb.hidden = NO;
+//		_warningLb.text = warning;
+//	}else {
+//		_warningLb.hidden = YES;
+//	}
+//
+//	[self _addVerticalView];
+//}
+//
+//- (void)updateRegressionCellWithParam:(NSDictionary *)param trackType:(NSString *)type isMatchService:(BOOL)isMatchService
+//{
+//	type = @"common_impression";
+//	param = @{@"list_uri" : @"ffffff", @"list_name": @"ffffsssssss"};
+//	_descLabel.hidden = YES;
+//	_label1.hidden = NO;
+//	_label2.hidden = NO;
+//	_label3.hidden = NO;
+//	_warningLb.hidden = NO;
+//
+//	self.label1.text = param[@"event"];
+//
+//	if ([type isEqualToString:@"pageview"]) {
+//		self.label2.text = param[@"page_code"];
+//	}
+//
+//	else if ([type isEqualToString:@"common_click-link_click"]) {
+//		self.label2.text = param[@"element_name"];
+//	}
+//
+//	else if ([type isEqualToString:@"common_impression"]) {
+//		self.label2.text = param[@"list_uri"];
+//		self.label3.text = param[@"list_name"];
+//	}
+//
+//	else if ([type isEqualToString:@"goods_click-link_click"]) {
+//		self.label2.text = param[@"list_uri"];
+//	}
+//
+//	else if ([type isEqualToString:@"goods_impression"]) {
+//		self.label2.text = param[@"list_uri"];
+//	}
+//
+//	else if ([type isEqualToString:@"impression"]) {
+//		self.label2.text = param[@"element_name"];
+//	}
+//
+//	else if ([type isEqualToString:@"data"]) {
+//		self.label2.text = param[@"element_name"];
+//	}
+//
+//	_warningLb.backgroundColor = [UIColor clearColor];
+//	if (isMatchService) {
+//		_warningLb.text = @"✅";
+//	}else {
+//		_warningLb.text = @"❌";
+//	}
+//}
 
 - (void)_addVerticalView
 {
@@ -363,16 +387,25 @@
 	return _timeLabel;
 }
 
+- (UILabel *)statusLabel
+{
+	if (!_statusLabel) {
+		_statusLabel = [[UILabel alloc] init];
+		_statusLabel.font = [UIFont systemFontOfSize:8];
+		[self.headerContentView addSubview:_statusLabel];
+		
+		_statusLabel.text = @"请求失败";
+		_statusLabel.textColor = [UIColor redColor];
+	}
+	return _statusLabel;
+}
+
 - (UILabel *)label1
 {
 	if (!_label1) {
 		_label1 = [UILabel new];
 		_label1.font = [UIFont systemFontOfSize:10];
 		_label1.textColor = RGB_HEX(0xE58101);
-		//        if (self.cellType == KTLogSystemTableViewCellTypeTrackAndApi) {
-		//            _label1.layer.borderColor = [UIColor colorWithHex:0x323232].CGColor;
-		//            _label1.layer.borderWidth = 1.0;
-		//        }
 		[self.headerContentView addSubview:_label1];
 	}
 	return _label1;

@@ -299,7 +299,7 @@ static NSMutableDictionary<NSNotificationName,NSDictionary<NSString *,NSString *
 				}
 			}
 			model.request = requestFromDict(params);
-			model.header = headerFromDict(params);
+			model.header = headerFromDict(dataTask.currentRequest.allHTTPHeaderFields);
 			
 			if (error) {
 				model.response = [error localizedDescription];

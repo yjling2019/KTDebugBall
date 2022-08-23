@@ -11,8 +11,6 @@
 
 #import <UIKit/UIKit.h>
 
-#define kDebugBallRequestHeaderKeys @[@"uuid", @"uid", @"access_token", @"country_code", @"currency", @"s", @"idfa", @"organic_idfv", @"req_time", @"sign", @"timezone"];
-
 static inline NSBundle *DebugBallBundle(void) {
 	NSString *podName = @"KTDebugBall";
 	
@@ -92,38 +90,20 @@ static inline NSMutableDictionary * dictionaryFromUrl(NSString *url) {
 }
 
 static inline NSString * headerFromDict(NSDictionary *dict) {
-	NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
-	
-	NSArray *headerKeys = kDebugBallRequestHeaderKeys;
-	for (id key in dict) {
-		if([headerKeys containsObject:key]) {
-			[headerDict setObject:[dict objectForKey:key] forKey:key];
-		}
-	}
-	
-	if (!headerDict) {
+	if (!dict) {
 		return @"{}";
 	}
 	NSError *parseError = nil;
-	NSData *jsonData = [NSJSONSerialization dataWithJSONObject:headerDict options:NSJSONWritingPrettyPrinted error:&parseError];
+	NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&parseError];
 	return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
 static inline NSString * requestFromDict(NSDictionary *dict) {
-	NSMutableDictionary *requestDict = [NSMutableDictionary dictionary];
-	
-	NSArray *headerKeys = kDebugBallRequestHeaderKeys;
-	for (id key in dict) {
-		if (![headerKeys containsObject:key]) {
-			[requestDict setObject:[dict objectForKey:key] forKey:key];
-		}
-	}
-	
-	if (!requestDict) {
+	if (!dict) {
 		return @"{}";
 	}
 	NSError *parseError = nil;
-	NSData *jsonData = [NSJSONSerialization dataWithJSONObject:requestDict options:NSJSONWritingPrettyPrinted error:&parseError];
+	NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&parseError];
 	return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 

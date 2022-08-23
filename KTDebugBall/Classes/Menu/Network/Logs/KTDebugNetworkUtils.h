@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 + (nullable NSString *)businessErrorOfRequest:(KTHttpLogModel *)model;
++ (nullable NSString *)apiJsonFileUrl;
++ (nullable NSString *)apiBasicPath;
 
 @end
 

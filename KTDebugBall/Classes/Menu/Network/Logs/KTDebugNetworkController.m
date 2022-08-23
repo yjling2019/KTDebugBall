@@ -190,9 +190,8 @@ static NSString *const KTLogSystemError = @"#error#";
 			detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemResponse, response];
 		}
 	}
-	if (statusCode) {
-		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemStatusCode, statusCode];
-	}
+	detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemStatusCode, statusCode?:@""];
+	
 	if (time) {
 		detail = [detail stringByAppendingFormat:@"%@ %@\n", KTLogSystemTime, time];
 	}

@@ -20,7 +20,6 @@ static NSArray <KTHttpDocListModel *> *filteredDocModels;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 
 @property (nonatomic, strong) NSArray <KTHttpDocListModel *> *docModels;
-//@property (nonatomic, strong) NSArray <KTHttpDocListModel *> *filteredDocModels;
 
 @end
 
@@ -46,7 +45,9 @@ static NSArray <KTHttpDocListModel *> *filteredDocModels;
 		[self loadDatas];
 		[self.tableView reloadData];
 		[self.indicatorView stopAnimating];
-	} else if ([DebugSharedManager.networkUtils apiJsonFileUrl]) {
+	} else if (DebugSharedManager.networkUtils &&
+			   [DebugSharedManager.networkUtils respondsToSelector:@selector(apiJsonFileUrl)] &&
+			   [DebugSharedManager.networkUtils apiJsonFileUrl]) {
 		[self loadApiJson];
 	}
 }
@@ -81,7 +82,6 @@ static NSArray <KTHttpDocListModel *> *filteredDocModels;
 																   error:nil];
 			weakSelf.docModels = [NSArray yy_modelArrayWithClass:[KTHttpDocListModel class] json:list];
 			[weakSelf filterDocModels];
-			[weakSelf checkDatas];
 			[weakSelf loadDatas];
 			[weakSelf.indicatorView stopAnimating];
 			[weakSelf.tableView reloadData];
@@ -93,20 +93,12 @@ static NSArray <KTHttpDocListModel *> *filteredDocModels;
 
 - (void)filterDocModels
 {
-	NSMutableArray *docs = [NSMutableArray array];
-	for (KTHttpDocListModel *model in self.docModels) {
-		if (![model.name containsString:@"APP"]) {
-			continue;
-		}
-		
-		[docs addObject:model];
+	if (DebugSharedManager.networkUtils &&
+		[DebugSharedManager.networkUtils respondsToSelector:@selector(filterDocModels:)]) {
+		filteredDocModels = [DebugSharedManager.networkUtils filterDocModels:self.docModels];
+	} else {
+		filteredDocModels = self.docModels;
 	}
-	filteredDocModels = docs.copy;
-}
-
-- (void)checkDatas
-{
-	
 }
 
 - (void)loadDatas
@@ -127,7 +119,9 @@ static NSArray <KTHttpDocListModel *> *filteredDocModels;
 	for (KTHttpDocListModel *model in filteredDocModels) {
 		for (KTHttpDocRequestModel *rm in model.list) {
 			NSString *path;
-			if ([DebugSharedManager.networkUtils apiBasicPath]) {
+			if (DebugSharedManager.networkUtils &&
+				[DebugSharedManager.networkUtils respondsToSelector:@selector(apiBasicPath)] &&
+				[DebugSharedManager.networkUtils apiBasicPath]) {
 				path = [NSString stringWithFormat:@"%@%@", [DebugSharedManager.networkUtils apiBasicPath], rm.path];
 			} else {
 				path = rm.path;

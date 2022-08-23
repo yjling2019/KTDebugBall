@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (nullable NSString *)apiJsonFileUrl;
 + (nullable NSString *)apiBasicPath;
 + (NSArray *)filterDocModels:(NSArray <KTHttpDocListModel *> *)models;
++ (int)requestTimeDurationStandard;
 
 @end
 

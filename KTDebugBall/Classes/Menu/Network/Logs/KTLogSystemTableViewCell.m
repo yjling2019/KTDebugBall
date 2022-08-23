@@ -9,6 +9,7 @@
 #import <Masonry/Masonry.h>
 #import "KTDebugViewMacros.h"
 #import "KTDebugBallUtils.h"
+#import "KTDebugManager.h"
 
 @interface KTLogSystemTableViewCellLabel : UILabel
 
@@ -176,8 +177,13 @@
 			self.statusLabel.hidden = YES;
 		}
 	} else if (type == KTLogSystemTableViewRequestCellTypeDuration) {
+		int standard = 1000;
+		if (DebugSharedManager.networkUtils && [DebugSharedManager.networkUtils respondsToSelector:@selector(requestTimeDurationStandard)]) {
+			standard = [DebugSharedManager.networkUtils requestTimeDurationStandard];
+		}
+		
 		self.statusLabel.textColor = [UIColor redColor];
-		if (model.during.integerValue > 1000) {
+		if (model.during.integerValue > standard) {
 			self.statusLabel.text = model.during;
 			self.statusLabel.hidden = NO;
 		} else {

@@ -212,10 +212,15 @@ static NSString *const KTLogSystemError = @"#error#";
 - (void)reloadData
 {
 	NSMutableArray *requests = [NSMutableArray array];
-
+	
+	int standard = 1000;
+	if (DebugSharedManager.networkUtils && [DebugSharedManager.networkUtils respondsToSelector:@selector(requestTimeDurationStandard)]) {
+		standard = [DebugSharedManager.networkUtils requestTimeDurationStandard];
+	}
+	
 	NSArray *array = [NSArray arrayWithArray:DebugSharedManager.requests];
 	for (KTHttpLogModel *model in array) {
-		if (model.during.integerValue > 1000) {
+		if (model.during.integerValue > standard) {
 			[requests addObject:model];
 		}
 	}

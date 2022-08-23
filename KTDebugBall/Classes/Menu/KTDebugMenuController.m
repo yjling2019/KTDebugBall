@@ -10,6 +10,7 @@
 #import <Masonry/Masonry.h>
 #import "KTDebugMenuModel.h"
 #import "KTDebugNetworkController.h"
+#import "KTDebugNetworkFailRequestVC.h"
 #import "KTDebugNetworkMissingInspectionVC.h"
 
 @interface KTDebugMenuController () <UITableViewDelegate, UITableViewDataSource>
@@ -211,6 +212,8 @@
 	
 	if ([item.title isEqualToString:@"Logs"]) {
 		[self.navigationController pushViewController:KTDebugNetworkController.new animated:YES];
+	} else if ([item.title isEqualToString:@"Failed requests"]) {
+		[self.navigationController pushViewController:KTDebugNetworkFailRequestVC.new animated:YES];
 	} else if ([item.title isEqualToString:@"Missing inspection"]) {
 		[self.navigationController pushViewController:KTDebugNetworkMissingInspectionVC.new animated:YES];
 	}

@@ -30,6 +30,8 @@ static NSArray <KTHttpDocListModel *> *filteredDocModels;
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 
+	self.title = @"Missing inspection";
+	
 	[self.view addSubview:self.tableView];
 	[self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
 		make.edges.mas_equalTo(0);

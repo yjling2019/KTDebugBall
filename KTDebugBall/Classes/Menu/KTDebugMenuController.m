@@ -11,6 +11,7 @@
 #import "KTDebugMenuModel.h"
 #import "KTDebugNetworkController.h"
 #import "KTDebugNetworkFailRequestVC.h"
+#import "KTDebugNetwrokDurationMonitorVC.h"
 #import "KTDebugNetworkMissingInspectionVC.h"
 
 @interface KTDebugMenuController () <UITableViewDelegate, UITableViewDataSource>
@@ -76,6 +77,10 @@
 		item2.title = @"Failed requests";
 		item2.isShowMore = YES;
 		
+		KTDebugMenuItemModel *item5 = [[KTDebugMenuItemModel alloc] init];
+		item5.title = @"Request duration monitoring";
+		item5.isShowMore = YES;
+		
 		KTDebugMenuItemModel *item3 = [[KTDebugMenuItemModel alloc] init];
 		item3.title = @"Missing inspection";
 		item3.isShowMore = YES;
@@ -84,7 +89,7 @@
 		item4.title = @"Filter";
 		item4.isShowMore = YES;
 
-		model.items = @[item1, item2, item3, item4];
+		model.items = @[item1, item2, item5, item3, item4];
 		model;
 	});
 	
@@ -216,6 +221,8 @@
 		[self.navigationController pushViewController:KTDebugNetworkFailRequestVC.new animated:YES];
 	} else if ([item.title isEqualToString:@"Missing inspection"]) {
 		[self.navigationController pushViewController:KTDebugNetworkMissingInspectionVC.new animated:YES];
+	} else if ([item.title isEqualToString:@"Request duration monitoring"]) {
+		[self.navigationController pushViewController:KTDebugNetwrokDurationMonitorVC.new animated:YES];
 	}
 }
 

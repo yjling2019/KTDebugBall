@@ -1,11 +1,11 @@
 //
-//  KTDebugNetworkController.m
-//  DebugBall
+//  KTDebugNetwrokDurationMonitorVC.m
+//  AAChartKit
 //
-//  Created by KOTU on 2022/7/13.
+//  Created by KOTU on 2022/8/23.
 //
 
-#import "KTDebugNetworkController.h"
+#import "KTDebugNetwrokDurationMonitorVC.h"
 #import <Masonry/Masonry.h>
 #import "KTHttpLogModel.h"
 #import "KTLogSystemTableViewCell.h"
@@ -28,34 +28,33 @@ static NSString *const KTLogSystemDuring = @"#during#";
 //static NSString *const KTLogSystemAppCommon = @"#appCommon#";
 static NSString *const KTLogSystemError = @"#error#";
 
-@interface KTDebugNetworkController () <UITableViewDelegate, UITableViewDataSource>
+@interface KTDebugNetwrokDurationMonitorVC () <UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSArray *datas;
 
 @end
 
-@implementation KTDebugNetworkController
+@implementation KTDebugNetwrokDurationMonitorVC
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-	self.title = @"Network Log";
+	[super viewDidLoad];
+	self.title = @"Request duration monitoring";
+	
 	[self.view addSubview:self.tableView];
 	[self.tableView mas_updateConstraints:^(MASConstraintMaker *make) {
 		make.edges.mas_equalTo(0);
 	}];
 	
 	[self reloadData];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadData) name:kRequestDataChangeNotification object:nil];
-	
-	UIBarButtonItem *clearItem = [[UIBarButtonItem alloc] initWithTitle:@"清空" style:UIBarButtonItemStylePlain target:self action:@selector(clearRequestData)];
-	self.navigationItem.rightBarButtonItem = clearItem;
 }
 
-- (void)clearRequestData
+- (void)viewWillAppear:(BOOL)animated
 {
-	[DebugSharedManager clearRequestLogs];
+	[super viewWillAppear:animated];
+	
+	[self reloadData];
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
@@ -137,7 +136,7 @@ static NSString *const KTLogSystemError = @"#error#";
 		KTLogSystemTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:KTLogSystemTableViewCellId];
 		[cell setUpConstraintsWithType:KTLogSystemTableViewCellTypeTrackAndApi];
 //		[cell updateCellWithDesc:model.url time:model.time];
-		[cell updateHttpLogModel:model type:KTLogSystemTableViewRequestCellTypeNone];
+		[cell updateHttpLogModel:model type:KTLogSystemTableViewRequestCellTypeDuration];
 		return cell;
 	}
 }
@@ -150,7 +149,7 @@ static NSString *const KTLogSystemError = @"#error#";
 	} else {
 		model.spread = YES;
 	}
-	[self reloadData];
+	[tableView reloadData];
 }
 
 - (NSString *)compomentDetailWithUrl:(NSString *)url
@@ -212,11 +211,17 @@ static NSString *const KTLogSystemError = @"#error#";
 
 - (void)reloadData
 {
-	self.datas = DebugSharedManager.requests;
+	NSMutableArray *requests = [NSMutableArray array];
+
+	NSArray *array = [NSArray arrayWithArray:DebugSharedManager.requests];
+	for (KTHttpLogModel *model in array) {
+		if (model.during.integerValue > 1000) {
+			[requests addObject:model];
+		}
+	}
 	
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[self.tableView reloadData];
-	});
+	self.datas = requests;
+	[self.tableView reloadData];
 }
 
 #pragma mark - lazy load
@@ -233,3 +238,4 @@ static NSString *const KTLogSystemError = @"#error#";
 }
 
 @end
+

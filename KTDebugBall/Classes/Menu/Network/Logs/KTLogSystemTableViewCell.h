@@ -15,11 +15,17 @@ typedef NS_ENUM(NSUInteger, KTLogSystemTableViewCellType) {
     KTLogSystemTableViewCellTypeRegression, /// 回归
 };
 
+typedef NS_ENUM(NSUInteger, KTLogSystemTableViewRequestCellType) {
+	KTLogSystemTableViewRequestCellTypeNone,
+	KTLogSystemTableViewRequestCellTypeFail,
+	KTLogSystemTableViewRequestCellTypeDuration,
+};
+
 @interface KTLogSystemTableViewCell : UITableViewCell
 
 - (void)setUpConstraintsWithType:(KTLogSystemTableViewCellType)cellType;
 
-- (void)updateHttpLogModel:(KTHttpLogModel *)model;
+- (void)updateHttpLogModel:(KTHttpLogModel *)model type:(KTLogSystemTableViewRequestCellType)type;
 
 //- (void)updateCellWithDesc:(NSString *)desc time:(NSString *)time;
 //

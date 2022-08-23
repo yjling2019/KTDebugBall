@@ -136,7 +136,7 @@ static NSString *const KTLogSystemError = @"#error#";
 		KTLogSystemTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:KTLogSystemTableViewCellId];
 		[cell setUpConstraintsWithType:KTLogSystemTableViewCellTypeTrackAndApi];
 //		[cell updateCellWithDesc:model.url time:model.time];
-		[cell updateHttpLogModel:model];
+		[cell updateHttpLogModel:model type:KTLogSystemTableViewRequestCellTypeFail];
 		return cell;
 	}
 }

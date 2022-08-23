@@ -152,7 +152,7 @@
 	}];
 }
 
-- (void)updateHttpLogModel:(KTHttpLogModel *)model
+- (void)updateHttpLogModel:(KTHttpLogModel *)model type:(KTLogSystemTableViewRequestCellType)type
 {
 	_descLabel.text = model.url;
 	_timeLabel.text = model.time;
@@ -164,14 +164,43 @@
 	self.detailLabel.attributedText = nil;
 	self.iconImageView.image = DebugBallImageWithNamed(@"console_arrow_fold");
 	
-	 if (model.statusCode.integerValue != 200) {
-		self.statusLabel.text = @"网络错误";
-		self.statusLabel.hidden = NO;
-	 } else if (model.business_error) {
-		 self.statusLabel.text = model.business_error;
-		 self.statusLabel.hidden = NO;
-	} else {
-		self.statusLabel.hidden = YES;
+	if (type == KTLogSystemTableViewRequestCellTypeFail) {
+		self.statusLabel.textColor = [UIColor redColor];
+		if (model.statusCode.integerValue != 200) {
+			self.statusLabel.text = @"网络错误";
+			self.statusLabel.hidden = NO;
+		} else if (model.business_error) {
+			self.statusLabel.text = model.business_error;
+			self.statusLabel.hidden = NO;
+		} else {
+			self.statusLabel.hidden = YES;
+		}
+	} else if (type == KTLogSystemTableViewRequestCellTypeDuration) {
+		self.statusLabel.textColor = [UIColor redColor];
+		if (model.during.integerValue > 1000) {
+			self.statusLabel.text = model.during;
+			self.statusLabel.hidden = NO;
+		} else {
+			self.statusLabel.hidden = YES;
+		}
+	} else if (type == KTLogSystemTableViewRequestCellTypeNone) {
+		if (model.statusCode.integerValue != 200) {
+			self.statusLabel.text = @"网络错误";
+			self.statusLabel.textColor = [UIColor redColor];
+			self.statusLabel.hidden = NO;
+		} else if (model.business_error) {
+			self.statusLabel.text = model.business_error;
+			self.statusLabel.textColor = [UIColor redColor];
+			self.statusLabel.hidden = NO;
+		} else if (model.during.integerValue > 1000) {
+			self.statusLabel.text = model.during;
+			self.statusLabel.textColor = [UIColor redColor];
+			self.statusLabel.hidden = NO;
+		} else {
+			self.statusLabel.text = model.during;
+			self.statusLabel.textColor = RGB_HEX(0x323232);
+			self.statusLabel.hidden = NO;
+		}
 	}
 }
 

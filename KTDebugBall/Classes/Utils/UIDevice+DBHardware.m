@@ -222,7 +222,7 @@ NSNotificationName const kAvailableMemoryDidChanged = @"kAvailableMemoryDidChang
 
 - (NSString *)db_getIDFV
 {
-    return [[[UIDevice currentDevice] identifierForVendor] UUIDString];;
+    return [[[UIDevice currentDevice] identifierForVendor] UUIDString];
 }
 
 - (NSString *)db_getIDFA

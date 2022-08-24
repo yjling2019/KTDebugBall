@@ -106,7 +106,7 @@
     if (rippleDL) {
         return rippleDL;
     }
-    rippleDL = [CADisplayLink displayLinkWithTarget:self selector:@selector(waving)];;
+    rippleDL = [CADisplayLink displayLinkWithTarget:self selector:@selector(waving)];
     rippleDL.frameInterval = 0.05;
     objc_setAssociatedObject(self, _cmd, rippleDL, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     return rippleDL;
@@ -132,7 +132,7 @@
     if (fpsDL) {
         return fpsDL;
     }
-    fpsDL = [CADisplayLink displayLinkWithTarget:self selector:@selector(tick:)];;
+    fpsDL = [CADisplayLink displayLinkWithTarget:self selector:@selector(tick:)];
     fpsDL.frameInterval = 0.05;
     objc_setAssociatedObject(self, _cmd, fpsDL, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     return fpsDL;

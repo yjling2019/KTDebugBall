@@ -1,6 +1,6 @@
 {
   "name": "KTDebugBall",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "summary": "KOTU's Debug Utils",
   "description": "TODO: Add long description of the pod here.",
   "homepage": "https://github.com/yjling2019/KTDebugBall",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/yjling2019/KTDebugBall.git",
-    "tag": "0.1.0"
+    "tag": "0.1.1"
   },
   "platforms": {
     "ios": "10.0"

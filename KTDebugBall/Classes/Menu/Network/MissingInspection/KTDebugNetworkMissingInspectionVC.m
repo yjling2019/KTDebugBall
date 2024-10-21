@@ -68,29 +68,29 @@ static NSArray <KTHttpDocListModel *> *filteredDocModels;
 
 - (void)loadApiJson
 {
-	[self.indicatorView startAnimating];
-	__weak typeof(self) weakSelf = self;
-	AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-	[manager GET:[DebugSharedManager.networkUtils apiJsonFileUrl]
-	  parameters:nil
-		 headers:nil
-		progress:nil
-		 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-			NSString *content = responseObject[@"content"];
-			NSData *data = [[NSData alloc] initWithBase64EncodedString:content options:0];
-	
-			NSArray *list = [NSJSONSerialization JSONObjectWithData:data
-																 options:NSJSONReadingMutableContainers
-																   error:nil];
-			weakSelf.docModels = [NSArray yy_modelArrayWithClass:[KTHttpDocListModel class] json:list];
-			[weakSelf filterDocModels];
-			[weakSelf loadDatas];
-			[weakSelf.indicatorView stopAnimating];
-			[weakSelf.tableView reloadData];
-	}
-		 failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-			[weakSelf.indicatorView stopAnimating];
-		}];
+//	[self.indicatorView startAnimating];
+//	__weak typeof(self) weakSelf = self;
+//	AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+//	[manager GET:[DebugSharedManager.networkUtils apiJsonFileUrl]
+//	  parameters:nil
+//		 headers:nil
+//		progress:nil
+//		 success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+//			NSString *content = responseObject[@"content"];
+//			NSData *data = [[NSData alloc] initWithBase64EncodedString:content options:0];
+//	
+//			NSArray *list = [NSJSONSerialization JSONObjectWithData:data
+//																 options:NSJSONReadingMutableContainers
+//																   error:nil];
+//			weakSelf.docModels = [NSArray yy_modelArrayWithClass:[KTHttpDocListModel class] json:list];
+//			[weakSelf filterDocModels];
+//			[weakSelf loadDatas];
+//			[weakSelf.indicatorView stopAnimating];
+//			[weakSelf.tableView reloadData];
+//	}
+//		 failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+//			[weakSelf.indicatorView stopAnimating];
+//		}];
 }
 
 - (void)filterDocModels
